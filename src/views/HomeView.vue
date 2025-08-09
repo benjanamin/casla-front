@@ -14,7 +14,7 @@ import TheWelcome from '../components/TheWelcome.vue'
     </div>
     <div class="row">
       <div class="col-md-4">
-        <img src="../assets/images/producto1.jpg" alt="Producto 1" class="img-fluid">
+        <!-- <img src="../assets/images/producto1.jpg" alt="Producto 1" class="img-fluid"> -->
       </div>
     </div>
   </div>
