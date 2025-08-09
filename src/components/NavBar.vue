@@ -19,7 +19,7 @@ import logoUrl from '@/assets/logo.jpg'
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-3">
                     <li class="nav-item">
-                        <a class="nav-link text-white hover:text-gray-300 transition duration-300" href="#">Home</a>
+                        <a class="nav-link transition duration-300" href="#">Home</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -27,13 +27,13 @@ import logoUrl from '@/assets/logo.jpg'
                             Productos
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Categoria 1</a></li>
-                            <li><a class="dropdown-item" href="#">Categoria 2</a></li>
-                            <li><a class="dropdown-item" href="#">Categoria 3</a></li>
+                            <li><a class="dropdown-item" href="#"><b>Categoria 1</b></a></li>
+                            <li><a class="dropdown-item" href="#"><b>Categoria 2</b></a></li>
+                            <li><a class="dropdown-item" href="#"><b>Categoria 3</b></a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white hover:text-gray-300 transition duration-300" href="#">Nosotros</a>
+                        <a class="nav-link transition duration-300" href="#">Nosotros</a>
                     </li>
                 </ul>
             </div>
@@ -55,6 +55,14 @@ import logoUrl from '@/assets/logo.jpg'
     letter-spacing: 0.5px;
 }
 
+.nav-link.show{
+    color: #e6a71e;
+}
+
+.dropdown-menu {
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
+}
+
 .nav-link {
     font-size: 1.2rem;
     font-weight: 600;
@@ -62,7 +70,6 @@ import logoUrl from '@/assets/logo.jpg'
     text-decoration: none;
     transition: color 0.3s ease;
 }
-ul
 
 li a:hover {
     color: #e6a71e;
