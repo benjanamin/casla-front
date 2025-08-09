@@ -21,7 +21,7 @@ import './assets/css/base.css'
       </div>
     </header> -->
     <main class="flex-grow-1">
-      <div class="light-background">
+      <div>
         <RouterView />
       </div>
     </main>
