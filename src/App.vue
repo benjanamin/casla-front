@@ -1,85 +1,66 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import NavBar from './components/NavBar.vue'
+import './assets/css/base.css'
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <div id="app">
+    <NavBar />
+    <!-- <header>
+      <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+      <div class="wrapper">
+        <HelloWorld msg="You did it!" />
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+        <nav>
+          <RouterLink to="/">Home</RouterLink>
+          <RouterLink to="/about">About</RouterLink>
+        </nav>
+      </div>
+    </header> -->
+    <main class="flex-grow-1">
+      <div class="light-background">
+        <RouterView />
+      </div>
+    </main>
+    <footer class="primary-background">
+      <div class="container py-5">
+        <div class="row">
+          <div class="col-md-4">
+            <h5 class="text-white">Comercial Casla</h5>
+            <p class="text-white-50">Tu socio comercial de confianza</p>
+          </div>
+          <div class="col-md-4">
+            <h6 class="text-white">Contacto</h6>
+            <p class="text-white-50">Email: info@comercialcasla.com</p>
+            <p class="text-white-50">Teléfono: +54 11 1234-5678</p>
+          </div>
+          <div class="col-md-4">
+            <h6 class="text-white">Síguenos</h6>
+            <p class="text-white-50">Facebook | Instagram | LinkedIn</p>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-12">
+            <hr class="border-light">
+            <p class="text-white-50 text-center mb-0">&copy; 2025 Comercial Casla. Todos los derechos reservados.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+.flex-grow-1 {
+  flex: 1;
 }
 </style>
