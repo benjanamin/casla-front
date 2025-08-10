@@ -1,14 +1,23 @@
 <script setup>
-
+const props = defineProps({
+  brand: {
+    type: String,
+    required: true
+  },
+  name: {
+    type: String,
+    required: true
+  }
+})
 </script>
 
 <template>
     <div class="card">
         <img src="https://picsum.photos/200" class="card-img-top" alt="...">
         <div class="card-body">
-            <h5 class="card-title product-brand"><b>MARCA</b></h5>
+            <h5 class="card-title product-brand"><b>{{ brand }}</b></h5>
             <h5 class="card-title"><b>
-                ESTE ES UN NOMBRE DE PRODUCTO DE EJEMPLO
+                {{ name }}
             </b></h5>
             <a href="https://wa.me/5491112345678?text=Hola,%20me%20interesa%20consultar%20el%20precio%20de%20este%20producto" 
                class="btn btn-cta w-100" 
