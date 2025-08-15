@@ -7,27 +7,47 @@ import { watch } from 'vue'
 
 const route = useRoute();
 const category = route.query.category;
-watch(
-  () => route.query.category,
-  (newCategory, oldCategory) => {
-    console.log(newCategory, oldCategory);
-  }
-)
+
 // Mobile filter state
 const showFilters = ref(false);
 
-// Sample products data - in a real app, this would come from an API
+// Real products data matching your business categories
 const products = ref([
-  { id: 1, brand: 'Nike', name: 'Air Max 270', category: 'Running', price: 12000, image: 'https://picsum.photos/300/200?random=1' },
-  { id: 2, brand: 'Adidas', name: 'Ultraboost 22', category: 'Running', price: 15000, image: 'https://picsum.photos/300/200?random=2' },
-  { id: 3, brand: 'Nike', name: 'Mercurial Vapor', category: 'Fútbol', price: 18000, image: 'https://picsum.photos/300/200?random=3' },
-  { id: 4, brand: 'Puma', name: 'Future Z', category: 'Fútbol', price: 14000, image: 'https://picsum.photos/300/200?random=4' },
-  { id: 5, brand: 'Under Armour', name: 'Curry 9', category: 'Básquet', price: 16000, image: 'https://picsum.photos/300/200?random=5' },
-  { id: 6, brand: 'Nike', name: 'LeBron 19', category: 'Básquet', price: 20000, image: 'https://picsum.photos/300/200?random=6' },
-  { id: 7, brand: 'Adidas', name: 'Barricade', category: 'Tenis', price: 13000, image: 'https://picsum.photos/300/200?random=7' },
-  { id: 8, brand: 'New Balance', name: 'Fresh Foam', category: 'Running', price: 11000, image: 'https://picsum.photos/300/200?random=8' },
-  { id: 9, brand: 'Nike', name: 'Metcon 7', category: 'Gimnasio', price: 17000, image: 'https://picsum.photos/300/200?random=9' },
-  { id: 10, brand: 'Adidas', name: 'Powerlift 5', category: 'Gimnasio', price: 12000, image: 'https://picsum.photos/300/200?random=10' },
+  // Productos metálicos
+  { id: 1, brand: 'Casla', name: 'Perfil de Aluminio 6063', category: 'productos-metalicos', price: 25000, image: 'https://picsum.photos/300/200?random=1' },
+  { id: 2, brand: 'Casla', name: 'Tubo Cuadrado de Acero', category: 'productos-metalicos', price: 18000, image: 'https://picsum.photos/300/200?random=2' },
+  { id: 3, brand: 'Casla', name: 'Placa de Acero Inoxidable', category: 'productos-metalicos', price: 45000, image: 'https://picsum.photos/300/200?random=3' },
+  { id: 4, brand: 'Casla', name: 'Varilla Rosca M8', category: 'productos-metalicos', price: 1200, image: 'https://picsum.photos/300/200?random=4' },
+  
+  // Abrasivos
+  { id: 5, brand: 'Casla', name: 'Disco de Corte 4.5"', category: 'abrasivos', price: 3500, image: 'https://picsum.photos/300/200?random=5' },
+  { id: 6, brand: 'Casla', name: 'Lija de Agua #80', category: 'abrasivos', price: 800, image: 'https://picsum.photos/300/200?random=6' },
+  { id: 7, brand: 'Casla', name: 'Disco de Desbaste 7"', category: 'abrasivos', price: 4200, image: 'https://picsum.photos/300/200?random=7' },
+  { id: 8, brand: 'Casla', name: 'Papel de Lija #120', category: 'abrasivos', price: 600, image: 'https://picsum.photos/300/200?random=8' },
+  
+  // Fijaciones
+  { id: 9, brand: 'Casla', name: 'Tornillo Phillips M6x20', category: 'fijaciones', price: 150, image: 'https://picsum.photos/300/200?random=9' },
+  { id: 10, brand: 'Casla', name: 'Tuerca Hexagonal M8', category: 'fijaciones', price: 80, image: 'https://picsum.photos/300/200?random=10' },
+  { id: 11, brand: 'Casla', name: 'Arandela Plana M10', category: 'fijaciones', price: 50, image: 'https://picsum.photos/300/200?random=11' },
+  { id: 12, brand: 'Casla', name: 'Tornillo Allen M12x30', category: 'fijaciones', price: 450, image: 'https://picsum.photos/300/200?random=12' },
+  
+  // Elementos de protección personal
+  { id: 13, brand: 'Casla', name: 'Casco de Seguridad', category: 'elementos-de-proteccion-personal', price: 8500, image: 'https://picsum.photos/300/200?random=13' },
+  { id: 14, brand: 'Casla', name: 'Guantes de Trabajo', category: 'elementos-de-proteccion-personal', price: 3200, image: 'https://picsum.photos/300/200?random=14' },
+  { id: 15, brand: 'Casla', name: 'Gafas de Seguridad', category: 'elementos-de-proteccion-personal', price: 2800, image: 'https://picsum.photos/300/200?random=15' },
+  { id: 16, brand: 'Casla', name: 'Protección Auditiva', category: 'elementos-de-proteccion-personal', price: 1800, image: 'https://picsum.photos/300/200?random=16' },
+  
+  // Materiales de construcción
+  { id: 17, brand: 'Casla', name: 'Cemento Portland', category: 'materiales-de-construccion', price: 12000, image: 'https://picsum.photos/300/200?random=17' },
+  { id: 18, brand: 'Casla', name: 'Arena Fina', category: 'materiales-de-construccion', price: 8000, image: 'https://picsum.photos/300/200?random=18' },
+  { id: 19, brand: 'Casla', name: 'Ladrillo Común', category: 'materiales-de-construccion', price: 150, image: 'https://picsum.photos/300/200?random=19' },
+  { id: 20, brand: 'Casla', name: 'Piedra Partida', category: 'materiales-de-construccion', price: 9500, image: 'https://picsum.photos/300/200?random=20' },
+  
+  // Ferreteria
+  { id: 21, brand: 'Casla', name: 'Martillo de Carpintero', category: 'ferreteria', price: 4500, image: 'https://picsum.photos/300/200?random=21' },
+  { id: 22, brand: 'Casla', name: 'Destornillador Phillips', category: 'ferreteria', price: 1200, image: 'https://picsum.photos/300/200?random=22' },
+  { id: 23, brand: 'Casla', name: 'Alicate Universal', category: 'ferreteria', price: 2800, image: 'https://picsum.photos/300/200?random=23' },
+  { id: 24, brand: 'Casla', name: 'Cinta Métrica 5m', category: 'ferreteria', price: 1800, image: 'https://picsum.photos/300/200?random=24' },
 ]);
 
 // Filter state
@@ -38,21 +58,22 @@ const activeFilters = ref({
   priceRange: { min: '', max: '' }
 });
 
-// Sample categories and brands data
+// Real categories matching your navbar
 const categories = ref([
-  { id: 1, name: 'Fútbol', count: 25 },
-  { id: 2, name: 'Básquet', count: 18 },
-  { id: 3, name: 'Tenis', count: 12 },
-  { id: 4, name: 'Running', count: 30 },
-  { id: 5, name: 'Gimnasio', count: 15 }
+  { id: 'productos-metalicos', name: 'Productos metálicos', count: 4 },
+  { id: 'abrasivos', name: 'Abrasivos', count: 4 },
+  { id: 'fijaciones', name: 'Fijaciones', count: 4 },
+  { id: 'elementos-de-proteccion-personal', name: 'Elementos de protección personal', count: 4 },
+  { id: 'materiales-de-construccion', name: 'Materiales de construcción', count: 4 },
+  { id: 'ferreteria', name: 'Ferreteria', count: 4 }
 ]);
 
 const brands = ref([
-  { id: 1, name: 'Nike', count: 20 },
-  { id: 2, name: 'Adidas', count: 18 },
-  { id: 3, name: 'Puma', count: 12 },
-  { id: 4, name: 'Under Armour', count: 8 },
-  { id: 5, name: 'New Balance', count: 10 }
+  { id: 1, name: 'Casla', count: 24 },
+  { id: 2, name: 'Stanley', count: 8 },
+  { id: 3, name: 'DeWalt', count: 6 },
+  { id: 4, name: 'Bosch', count: 4 },
+  { id: 5, name: 'Makita', count: 3 }
 ]);
 
 // Computed filtered products
@@ -71,11 +92,7 @@ const filteredProducts = computed(() => {
 
   // Category filter
   if (activeFilters.value.categories.length > 0) {
-    const categoryNames = activeFilters.value.categories.map(catId => {
-      const category = categories.value.find(c => c.id === catId);
-      return category ? category.name : '';
-    });
-    filtered = filtered.filter(product => categoryNames.includes(product.category));
+    filtered = filtered.filter(product => activeFilters.value.categories.includes(product.category));
   }
 
   // Brand filter
@@ -116,12 +133,32 @@ const closeFilters = () => {
   showFilters.value = false;
 };
 
+const getPageTitle = () => {
+  if (activeFilters.value.categories.length > 0) {
+    const category = categories.value.find(c => c.id === activeFilters.value.categories[0]);
+    return category ? category.name : 'Productos';
+  }
+  return 'Todos los productos';
+};
+
+// Watch for URL category changes and update filters accordingly
+watch(
+  () => route.query.category,
+  (newCategory) => {
+    if (newCategory) {
+      // Set the category filter based on URL
+      activeFilters.value.categories = [newCategory];
+    } else {
+      // Clear category filter if no category in URL
+      activeFilters.value.categories = [];
+    }
+  },
+  { immediate: true }
+);
+
 // Initialize category filter from URL if present
 if (category) {
-  const categoryObj = categories.value.find(c => c.name.toLowerCase() === category.toLowerCase());
-  if (categoryObj) {
-    activeFilters.value.categories = [categoryObj.id];
-  }
+  activeFilters.value.categories = [category];
 }
 </script>
 
@@ -190,7 +227,9 @@ if (category) {
         <!-- Products Column -->
         <div class="col-lg-9 col-md-12">
           <div class="products-header">
-            <h2 class="page-title">Productos</h2>
+            <h2 class="page-title">
+              {{ getPageTitle() }}
+            </h2>
             <div class="results-info">
               <span class="results-count">{{ filteredProducts.length }} productos encontrados</span>
               <div class="sort-controls">

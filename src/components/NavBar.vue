@@ -33,7 +33,7 @@ import logoUrl from '@/assets/logo.jpg'
                             <li><router-link class="dropdown-item" to="/productos?category=elementos-de-proteccion-personal"><b>Elementos de protección personal</b></router-link></li>
                             <li><router-link class="dropdown-item" to="/productos?category=materiales-de-construccion"><b>Materiales de construcción</b></router-link></li>
                             <li><router-link class="dropdown-item" to="/productos?category=ferreteria"><b>Ferreteria</b></router-link></li>
-                            <li><router-link class="dropdown-item" to="/productos"><b>Otros</b></router-link></li>
+                            <li><router-link class="dropdown-item" to="/productos"><b>Todos los productos</b></router-link></li>
                         </ul>
                     </li>
                     <li class="nav-item">

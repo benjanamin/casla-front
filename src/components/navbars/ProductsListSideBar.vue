@@ -125,21 +125,22 @@ const props = defineProps({
   categories: {
     type: Array,
     default: () => [
-      { id: 1, name: 'Fútbol', count: 25 },
-      { id: 2, name: 'Básquet', count: 18 },
-      { id: 3, name: 'Tenis', count: 12 },
-      { id: 4, name: 'Running', count: 30 },
-      { id: 5, name: 'Gimnasio', count: 15 }
+      { id: 'productos-metalicos', name: 'Productos metálicos', count: 4 },
+      { id: 'abrasivos', name: 'Abrasivos', count: 4 },
+      { id: 'fijaciones', name: 'Fijaciones', count: 4 },
+      { id: 'elementos-de-proteccion-personal', name: 'Elementos de protección personal', count: 4 },
+      { id: 'materiales-de-construccion', name: 'Materiales de construcción', count: 4 },
+      { id: 'ferreteria', name: 'Ferreteria', count: 4 }
     ]
   },
   brands: {
     type: Array,
     default: () => [
-      { id: 1, name: 'Nike', count: 20 },
-      { id: 2, name: 'Adidas', count: 18 },
-      { id: 3, name: 'Puma', count: 12 },
-      { id: 4, name: 'Under Armour', count: 8 },
-      { id: 5, name: 'New Balance', count: 10 }
+      { id: 1, name: 'Casla', count: 24 },
+      { id: 2, name: 'Stanley', count: 8 },
+      { id: 3, name: 'DeWalt', count: 6 },
+      { id: 4, name: 'Bosch', count: 4 },
+      { id: 5, name: 'Makita', count: 3 }
     ]
   }
 })
