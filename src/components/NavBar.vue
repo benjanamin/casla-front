@@ -19,7 +19,7 @@ import logoUrl from '@/assets/logo.jpg'
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-3">
                     <li class="nav-item">
-                        <a class="nav-link transition duration-300" href="#">Home</a>
+                        <router-link class="nav-link transition duration-300" to="/">Home</router-link>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -27,9 +27,13 @@ import logoUrl from '@/assets/logo.jpg'
                             Productos
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#"><b>Categoria 1</b></a></li>
-                            <li><a class="dropdown-item" href="#"><b>Categoria 2</b></a></li>
-                            <li><a class="dropdown-item" href="#"><b>Categoria 3</b></a></li>
+                            <li><router-link class="dropdown-item" to="/productos?category=productos-metalicos"><b>Productos metálicos</b></router-link></li>
+                            <li><router-link class="dropdown-item" to="/productos?category=abrasivos"><b>Abrasivos</b></router-link></li>
+                            <li><router-link class="dropdown-item" to="/productos?category=fijaciones"><b>Fijaciones</b></router-link></li>
+                            <li><router-link class="dropdown-item" to="/productos?category=elementos-de-proteccion-personal"><b>Elementos de protección personal</b></router-link></li>
+                            <li><router-link class="dropdown-item" to="/productos?category=materiales-de-construccion"><b>Materiales de construcción</b></router-link></li>
+                            <li><router-link class="dropdown-item" to="/productos?category=ferreteria"><b>Ferreteria</b></router-link></li>
+                            <li><router-link class="dropdown-item" to="/productos"><b>Otros</b></router-link></li>
                         </ul>
                     </li>
                     <li class="nav-item">
