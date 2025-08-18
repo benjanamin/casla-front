@@ -5,12 +5,12 @@ import logoUrl from '@/assets/logo.jpg'
 <template>
     <nav class="navbar navbar-expand-lg primary-background py-2">
         <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+            <router-link class="navbar-brand d-flex align-items-center gap-2" to="/">
                 <!-- <img :src="logoUrl" alt="Comercial Casla" class="brand-logo" /> -->
                 <span class="brand-text text-white">
                     COMERCIAL <span class="secondary-color">CASLA</span>
                 </span>
-            </a>
+            </router-link>
             <button class="navbar-toggler" type="button" style="background-color: #ffffff;" data-bs-toggle="collapse"
                 data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
                 aria-label="Toggle navigation">

@@ -1,5 +1,4 @@
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
 import FeaturedProducts from '../components/store/FeaturedProducts.vue'
 </script>
 
