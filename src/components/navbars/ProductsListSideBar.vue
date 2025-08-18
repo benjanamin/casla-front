@@ -7,7 +7,7 @@
       </h5>
       <div class="search-container">
         <input 
-          v-model="searchQuery" 
+          :value="currentSearchQuery" 
           type="text" 
           class="form-control search-input" 
           placeholder="Buscar productos..."
@@ -30,7 +30,7 @@
           <input 
             type="checkbox" 
             :value="category.id"
-            v-model="selectedCategories"
+            :checked="currentFilters.categories.includes(category.id)"
             @change="handleCategoryChange"
             class="filter-checkbox"
           >
@@ -48,7 +48,7 @@
       <div class="price-range">
         <div class="price-inputs">
           <input 
-            v-model.number="priceRange.min" 
+            :value="currentFilters.priceRange.min" 
             type="number" 
             class="form-control price-input" 
             placeholder="Min"
@@ -56,7 +56,7 @@
           >
           <span class="price-separator">-</span>
           <input 
-            v-model.number="priceRange.max" 
+            :value="currentFilters.priceRange.max" 
             type="number" 
             class="form-control price-input" 
             placeholder="Max"
@@ -68,7 +68,7 @@
             type="range" 
             :min="priceSlider.min" 
             :max="priceSlider.max" 
-            v-model="priceSlider.value"
+            :value="priceSliderValue"
             @input="handleSliderChange"
             class="range-slider"
           >
@@ -94,7 +94,7 @@
           <input 
             type="checkbox" 
             :value="brand.id"
-            v-model="selectedBrands"
+            :checked="currentFilters.brands.includes(brand.id)"
             @change="handleBrandChange"
             class="filter-checkbox"
           >
@@ -142,69 +142,118 @@ const props = defineProps({
       { id: 4, name: 'Bosch', count: 4 },
       { id: 5, name: 'Makita', count: 3 }
     ]
+  },
+  // New props to receive current filter state from parent
+  currentFilters: {
+    type: Object,
+    default: () => ({
+      categories: [],
+      brands: [],
+      priceRange: { min: '', max: '' }
+    })
+  },
+  currentSearchQuery: {
+    type: String,
+    default: ''
   }
 })
 
 // Emits for communicating with parent
 const emit = defineEmits(['filter-change', 'search-change'])
 
-// Reactive data
-const searchQuery = ref('')
-const selectedCategories = ref([])
-const selectedBrands = ref([])
-const priceRange = ref({ min: '', max: '' })
+// Local state for price slider
 const priceSlider = ref({ min: 0, max: 10000, value: 10000 })
 
 // Computed properties
 const hasActiveFilters = computed(() => {
-  return searchQuery.value || 
-         selectedCategories.value.length > 0 || 
-         selectedBrands.value.length > 0 || 
-         priceRange.value.min || 
-         priceRange.value.max
+  return props.currentSearchQuery || 
+         props.currentFilters.categories.length > 0 || 
+         props.currentFilters.brands.length > 0 || 
+         props.currentFilters.priceRange.min || 
+         props.currentFilters.priceRange.max
+})
+
+const priceSliderValue = computed(() => {
+  return props.currentFilters.priceRange.max || priceSlider.value.max
 })
 
 // Methods
-const handleSearch = () => {
-  emit('search-change', searchQuery.value)
+const handleSearch = (event) => {
+  emit('search-change', event.target.value)
 }
 
-const handleCategoryChange = () => {
+const handleCategoryChange = (event) => {
+  const categoryId = event.target.value
+  const isChecked = event.target.checked
+  
+  let newCategories = [...props.currentFilters.categories]
+  
+  if (isChecked) {
+    if (!newCategories.includes(categoryId)) {
+      newCategories.push(categoryId)
+    }
+  } else {
+    newCategories = newCategories.filter(id => id !== categoryId)
+  }
+  
   emit('filter-change', {
-    categories: selectedCategories.value,
-    brands: selectedBrands.value,
-    priceRange: priceRange.value
+    categories: newCategories,
+    brands: props.currentFilters.brands,
+    priceRange: props.currentFilters.priceRange
   })
 }
 
-const handleBrandChange = () => {
+const handleBrandChange = (event) => {
+  const brandId = parseInt(event.target.value)
+  const isChecked = event.target.checked
+  
+  let newBrands = [...props.currentFilters.brands]
+  
+  if (isChecked) {
+    if (!newBrands.includes(brandId)) {
+      newBrands.push(brandId)
+    }
+  } else {
+    newBrands = newBrands.filter(id => id !== brandId)
+  }
+  
   emit('filter-change', {
-    categories: selectedCategories.value,
-    brands: selectedBrands.value,
-    priceRange: priceRange.value
+    categories: props.currentFilters.categories,
+    brands: newBrands,
+    priceRange: props.currentFilters.priceRange
   })
 }
 
-const handlePriceChange = () => {
+const handlePriceChange = (event) => {
+  const field = event.target.placeholder === 'Min' ? 'min' : 'max'
+  const value = event.target.value
+  
+  const newPriceRange = {
+    ...props.currentFilters.priceRange,
+    [field]: value
+  }
+  
   emit('filter-change', {
-    categories: selectedCategories.value,
-    brands: selectedBrands.value,
-    priceRange: priceRange.value
+    categories: props.currentFilters.categories,
+    brands: props.currentFilters.brands,
+    priceRange: newPriceRange
   })
 }
 
-const handleSliderChange = () => {
-  priceRange.value.max = priceSlider.value.value
-  handlePriceChange()
+const handleSliderChange = (event) => {
+  const newPriceRange = {
+    ...props.currentFilters.priceRange,
+    max: event.target.value
+  }
+  
+  emit('filter-change', {
+    categories: props.currentFilters.categories,
+    brands: props.currentFilters.brands,
+    priceRange: newPriceRange
+  })
 }
 
 const clearAllFilters = () => {
-  searchQuery.value = ''
-  selectedCategories.value = []
-  selectedBrands.value = []
-  priceRange.value = { min: '', max: '' }
-  priceSlider.value.value = priceSlider.value.max
-  
   emit('search-change', '')
   emit('filter-change', {
     categories: [],

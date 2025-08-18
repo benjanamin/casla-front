@@ -206,6 +206,8 @@ if (category) {
         <ProductsListSideBar 
           :categories="categories"
           :brands="brands"
+          :current-filters="activeFilters"
+          :current-search-query="searchQuery"
           @search-change="handleSearchChange"
           @filter-change="handleFilterChange"
         />
@@ -219,6 +221,8 @@ if (category) {
           <ProductsListSideBar 
             :categories="categories"
             :brands="brands"
+            :current-filters="activeFilters"
+            :current-search-query="searchQuery"
             @search-change="handleSearchChange"
             @filter-change="handleFilterChange"
           />
@@ -506,6 +510,7 @@ if (category) {
 @media (max-width: 768px) {
   .products-page {
     padding: 0;
+    margin-bottom: 2rem;
   }
   
   .products-header {
@@ -535,6 +540,10 @@ if (category) {
 }
 
 @media (max-width: 576px) {
+  .products-page {
+    margin-bottom: 2rem;
+  }
+
   .products-grid {
     grid-template-columns: 1fr;
     padding: 0 0.5rem;
