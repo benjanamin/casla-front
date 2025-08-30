@@ -1,10 +1,10 @@
 <template>
     <div class="container-fluid">
-        <div class="row">
+        <div class="row mt-5 mb-5">
             <!-- Left Side - Product Scanning and Cart -->
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
+            <div class="col-md-8 d-flex">
+                <div class="card flex-fill">
+                    <div class="card-header text-white" style="background-color: #022e6b;">
                         <div class="d-flex justify-content-between align-items-center">
                             <h4 class="mb-0">
                                 <i class="bi bi-cash-register me-2"></i>
@@ -143,9 +143,9 @@
             </div>
 
             <!-- Right Side - Totals and Checkout -->
-            <div class="col-md-4">
-                <div class="card sticky-top" style="top: 20px;">
-                    <div class="card-header bg-success text-white">
+            <div class="col-md-4 d-flex">
+                <div class="card flex-fill sticky-top" style="top: 20px;">
+                    <div class="card-header text-white" style="background-color: #022e6b;">
                         <h5 class="mb-0">
                             <i class="bi bi-calculator me-2"></i>
                             Resumen de Venta
@@ -210,14 +210,15 @@
                                 Limpiar Carrito
                             </button>
                             
-                            <button 
+                            <!-- Print Receipt Button - Hidden -->
+                            <!-- <button 
                                 @click="printReceipt"
                                 :disabled="cart.length === 0"
                                 class="btn btn-outline-info w-100"
                             >
                                 <i class="bi bi-printer me-2"></i>
                                 Imprimir Ticket
-                            </button>
+                            </button> -->
                         </div>
                     </div>
                 </div>
@@ -647,5 +648,20 @@ onUnmounted(() => {
         width: 95%;
         margin: 1rem;
     }
+}
+
+/* Equal height cards */
+.row {
+    align-items: stretch;
+}
+
+.card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body {
+    flex: 1;
 }
 </style>

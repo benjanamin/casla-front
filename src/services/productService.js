@@ -1,5 +1,5 @@
-// Product Service for POS System
-// This service handles all product-related operations
+// Product Service for Inventory System
+// This service handles all product-related operations including buy/sell prices and history
 
 class ProductService {
     constructor() {
@@ -10,81 +10,91 @@ class ProductService {
                 code: '123456789', 
                 name: 'Laptop HP Pavilion', 
                 brand: 'HP', 
-                price: 899990, 
+                sellPrice: 899990, 
+                buyPrice: 650000,
+                supplier: 'Distribuidora TechMax',
                 stock: 15,
                 category: 'Computadoras',
-                description: 'Laptop HP Pavilion 15.6" Intel Core i5'
+                description: 'Laptop HP Pavilion 15.6" Intel Core i5',
+                priceHistory: [
+                    { date: '2024-01-15', type: 'buy', price: 650000, supplier: 'Distribuidora TechMax', quantity: 20 },
+                    { date: '2024-01-20', type: 'sell', price: 899990, quantity: 5 }
+                ]
             },
             { 
                 id: '002', 
                 code: '987654321', 
                 name: 'Mouse Inalámbrico', 
                 brand: 'Logitech', 
-                price: 29990, 
+                sellPrice: 29990, 
+                buyPrice: 18000,
+                supplier: 'Electronics Pro',
                 stock: 50,
                 category: 'Periféricos',
-                description: 'Mouse inalámbrico Logitech M185'
+                description: 'Mouse inalámbrico Logitech M185',
+                priceHistory: [
+                    { date: '2024-01-10', type: 'buy', price: 18000, supplier: 'Electronics Pro', quantity: 100 },
+                    { date: '2024-01-18', type: 'sell', price: 29990, quantity: 50 }
+                ]
             },
             { 
                 id: '003', 
                 code: '456789123', 
                 name: 'Teclado Mecánico', 
                 brand: 'Corsair', 
-                price: 149990, 
+                sellPrice: 149990, 
+                buyPrice: 95000,
+                supplier: 'Gaming Gear Co',
                 stock: 25,
                 category: 'Periféricos',
-                description: 'Teclado mecánico Corsair K70 RGB'
+                description: 'Teclado mecánico Corsair K70 RGB',
+                priceHistory: [
+                    { date: '2024-01-12', type: 'buy', price: 95000, supplier: 'Gaming Gear Co', quantity: 30 },
+                    { date: '2024-01-22', type: 'sell', price: 149990, quantity: 5 }
+                ]
             },
             { 
                 id: '004', 
                 code: '789123456', 
                 name: 'Monitor 24"', 
                 brand: 'Samsung', 
-                price: 199990, 
+                sellPrice: 199990, 
+                buyPrice: 140000,
+                supplier: 'Display Solutions',
                 stock: 30,
                 category: 'Monitores',
-                description: 'Monitor Samsung 24" Full HD'
+                description: 'Monitor Samsung 24" Full HD',
+                priceHistory: [
+                    { date: '2024-01-08', type: 'buy', price: 140000, supplier: 'Display Solutions', quantity: 40 },
+                    { date: '2024-01-25', type: 'sell', price: 199990, quantity: 10 }
+                ]
             },
             { 
                 id: '005', 
                 code: '321654987', 
                 name: 'Auriculares Gaming', 
                 brand: 'Razer', 
-                price: 79990, 
+                sellPrice: 79990, 
+                buyPrice: 52000,
+                supplier: 'Audio Masters',
                 stock: 40,
                 category: 'Audio',
-                description: 'Auriculares gaming Razer Kraken X'
-            },
-            { 
-                id: '006', 
-                code: '147258369', 
-                name: 'Webcam HD', 
-                brand: 'Logitech', 
-                price: 59990, 
-                stock: 35,
-                category: 'Periféricos',
-                description: 'Webcam Logitech C270 HD'
-            },
-            { 
-                id: '007', 
-                code: '963852741', 
-                name: 'Impresora Láser', 
-                brand: 'HP', 
-                price: 299990, 
-                stock: 20,
-                category: 'Impresoras',
-                description: 'Impresora láser HP LaserJet Pro'
-            },
-            { 
-                id: '008', 
-                code: '852963741', 
-                name: 'SSD 500GB', 
-                brand: 'Samsung', 
-                price: 89990, 
-                stock: 45,
-                category: 'Almacenamiento',
-                description: 'SSD Samsung 870 EVO 500GB'
+                description: 'Auriculares gaming Razer Kraken X',
+                priceHistory: [
+                    { date: '2024-01-14', type: 'buy', price: 52000, supplier: 'Audio Masters', quantity: 60 },
+                    { date: '2024-01-21', type: 'sell', price: 79990, quantity: 20 }
+                ]
             }
+        ]
+        
+        this.suppliers = [
+            'Distribuidora TechMax',
+            'Electronics Pro', 
+            'Gaming Gear Co',
+            'Display Solutions',
+            'Audio Masters',
+            'Storage Plus',
+            'Network Solutions'
         ]
     }
 
@@ -110,7 +120,8 @@ class ProductService {
             product.name.toLowerCase().includes(searchTerm) ||
             product.brand.toLowerCase().includes(searchTerm) ||
             product.code.includes(searchTerm) ||
-            product.category.toLowerCase().includes(searchTerm)
+            product.category.toLowerCase().includes(searchTerm) ||
+            product.supplier.toLowerCase().includes(searchTerm)
         )
 
         return Promise.resolve(results)
@@ -147,10 +158,21 @@ class ProductService {
             code: productData.code,
             name: productData.name,
             brand: productData.brand,
-            price: parseFloat(productData.price),
+            sellPrice: parseFloat(productData.sellPrice),
+            buyPrice: parseFloat(productData.buyPrice),
+            supplier: productData.supplier,
             stock: parseInt(productData.stock),
             category: productData.category,
-            description: productData.description
+            description: productData.description,
+            priceHistory: [
+                { 
+                    date: new Date().toISOString().split('T')[0], 
+                    type: 'buy', 
+                    price: parseFloat(productData.buyPrice), 
+                    supplier: productData.supplier, 
+                    quantity: parseInt(productData.stock) 
+                }
+            ]
         }
 
         this.products.push(newProduct)
@@ -163,6 +185,54 @@ class ProductService {
         if (productIndex !== -1) {
             this.products[productIndex] = { ...this.products[productIndex], ...updates }
             return Promise.resolve(this.products[productIndex])
+        }
+        return Promise.reject(new Error('Product not found'))
+    }
+
+    // Record a purchase (buy transaction)
+    recordPurchase(productId, quantity, buyPrice, supplier) {
+        const product = this.products.find(p => p.id === productId)
+        if (product) {
+            product.stock += quantity
+            product.buyPrice = buyPrice
+            product.supplier = supplier
+            
+            product.priceHistory.push({
+                date: new Date().toISOString().split('T')[0],
+                type: 'buy',
+                price: buyPrice,
+                supplier: supplier,
+                quantity: quantity
+            })
+            
+            return Promise.resolve(product)
+        }
+        return Promise.reject(new Error('Product not found'))
+    }
+
+    // Record a sale (sell transaction)
+    recordSale(productId, quantity, sellPrice) {
+        const product = this.products.find(p => p.id === productId)
+        if (product && product.stock >= quantity) {
+            product.stock -= quantity
+            
+            product.priceHistory.push({
+                date: new Date().toISOString().split('T')[0],
+                type: 'sell',
+                price: sellPrice,
+                quantity: quantity
+            })
+            
+            return Promise.resolve(product)
+        }
+        return Promise.reject(new Error('Product not found or insufficient stock'))
+    }
+
+    // Get price history for a product
+    getPriceHistory(productId) {
+        const product = this.products.find(p => p.id === productId)
+        if (product) {
+            return Promise.resolve([...product.priceHistory].sort((a, b) => new Date(b.date) - new Date(a.date)))
         }
         return Promise.reject(new Error('Product not found'))
     }
@@ -183,6 +253,11 @@ class ProductService {
         return Promise.resolve(categories)
     }
 
+    // Get suppliers
+    getSuppliers() {
+        return Promise.resolve([...this.suppliers])
+    }
+
     // Get products with pagination
     getProductsWithPagination(page = 1, limit = 10, search = '') {
         let filteredProducts = this.products
@@ -190,7 +265,8 @@ class ProductService {
         if (search) {
             filteredProducts = this.products.filter(product => 
                 product.name.toLowerCase().includes(search.toLowerCase()) ||
-                product.brand.toLowerCase().includes(search.toLowerCase())
+                product.brand.toLowerCase().includes(search.toLowerCase()) ||
+                product.supplier.toLowerCase().includes(search.toLowerCase())
             )
         }
 
@@ -204,6 +280,21 @@ class ProductService {
             page,
             limit,
             totalPages: Math.ceil(filteredProducts.length / limit)
+        })
+    }
+
+    // Get inventory summary
+    getInventorySummary() {
+        const totalProducts = this.products.length
+        const totalValue = this.products.reduce((sum, product) => sum + (product.buyPrice * product.stock), 0)
+        const lowStockCount = this.products.filter(p => p.stock < 10).length
+        const categories = [...new Set(this.products.map(p => p.category))]
+
+        return Promise.resolve({
+            totalProducts,
+            totalValue,
+            lowStockCount,
+            categories
         })
     }
 }

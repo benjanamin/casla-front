@@ -36,6 +36,16 @@ import logoUrl from '@/assets/logo.jpg'
                             <li><router-link class="dropdown-item" to="/productos"><b>Todos los productos</b></router-link></li>
                         </ul>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="inventoryDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Inventario
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="inventoryDropdown">
+                            <li><router-link class="dropdown-item" to="/inventario"><b>Gestión de Inventario</b></router-link></li>
+                            <li><router-link class="dropdown-item" to="/inventario/punto-de-venta"><b>Punto de Venta</b></router-link></li>
+                        </ul>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link transition duration-300" href="#">Nosotros</a>
                     </li>

@@ -29,6 +29,11 @@ const router = createRouter({
       name: 'punto-de-venta',
       component: () => import('../views/Inventory/POSView.vue'),
     },
+    {
+      path: '/inventario',
+      name: 'inventario',
+      component: () => import('../views/Inventory/InventoryView.vue'),
+    },
   ],
 })
 
