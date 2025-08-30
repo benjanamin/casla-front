@@ -1,18 +1,19 @@
 <template>
     <div class="container-fluid">
-        <div class="row mt-5 mb-5">
+        <div class="row mt-3 mb-3">
             <!-- Left Side - Product Scanning and Cart -->
-            <div class="col-md-8 d-flex">
-                <div class="card flex-fill">
+            <div class="col-12 col-lg-8 mb-3">
+                <div class="card h-100">
                     <div class="card-header text-white" style="background-color: #022e6b;">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="mb-0">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                            <h4 class="mb-2 mb-md-0">
                                 <i class="bi bi-cash-register me-2"></i>
                                 Punto de Venta
                             </h4>
                             <div class="text-white-50 small">
                                 <i class="bi bi-keyboard me-1"></i>
-                                F1: Scanner | F2: Buscar | F3: Vender
+                                <span class="d-none d-md-inline">F1: Scanner | F2: Buscar | F3: Vender</span>
+                                <span class="d-md-none">Toca para escanear o buscar productos</span>
                             </div>
                         </div>
                     </div>
@@ -36,32 +37,36 @@
                                 <i class="bi bi-upc-scan me-2"></i>
                                 Escanear Producto
                             </label>
-                            <div class="input-group">
+                            <div class="d-flex flex-column flex-md-row gap-2">
                                 <input 
                                     type="text" 
                                     id="productScanner"
                                     v-model="scannedCode"
                                     @keyup.enter="scanProduct"
-                                    class="form-control form-control-lg"
+                                    class="form-control form-control-lg flex-fill"
                                     placeholder="Escanee el código de barras o ingrese manualmente..."
                                     autofocus
                                 >
-                                <button 
-                                    @click="scanProduct"
-                                    class="btn btn-success btn-lg"
-                                    type="button"
-                                >
-                                    <i class="bi bi-upc-scan me-2"></i>
-                                    Escanear
-                                </button>
-                                <button 
-                                    @click="openSearchModal"
-                                    class="btn btn-outline-primary btn-lg"
-                                    type="button"
-                                >
-                                    <i class="bi bi-search me-2"></i>
-                                    Buscar
-                                </button>
+                                <div class="d-flex gap-2">
+                                    <button 
+                                        @click="scanProduct"
+                                        class="btn btn-success btn-lg flex-fill"
+                                        type="button"
+                                    >
+                                        <i class="bi bi-upc-scan me-2"></i>
+                                        <span class="d-none d-sm-inline">Escanear</span>
+                                        <span class="d-sm-none">✓</span>
+                                    </button>
+                                    <button 
+                                        @click="openSearchModal"
+                                        class="btn btn-outline-primary btn-lg flex-fill"
+                                        type="button"
+                                    >
+                                        <i class="bi bi-search me-2"></i>
+                                        <span class="d-none d-sm-inline">Buscar</span>
+                                        <span class="d-sm-none">🔍</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -81,50 +86,58 @@
                                 <div 
                                     v-for="(item, index) in cart" 
                                     :key="index"
-                                    class="cart-item card mb-2"
+                                    class="cart-item card mb-3"
                                 >
-                                    <div class="card-body py-2">
-                                        <div class="row align-items-center">
-                                            <div class="col-md-4">
-                                                <strong>{{ item.name }}</strong>
-                                                <br>
-                                                <small class="text-muted">{{ item.brand }}</small>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <span class="fw-bold">{{ formatCLP(item.price) }}</span>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="input-group input-group-sm">
-                                                    <button 
-                                                        @click="decreaseQuantity(index)"
-                                                        class="btn btn-outline-secondary"
-                                                        type="button"
-                                                    >
-                                                        <i class="bi bi-dash"></i>
-                                                    </button>
-                                                    <input 
-                                                        type="number" 
-                                                        v-model.number="item.quantity"
-                                                        @change="updateItemTotal(index)"
-                                                        class="form-control text-center"
-                                                        min="1"
-                                                        style="max-width: 80px;"
-                                                    >
-                                                    <button 
-                                                        @click="increaseQuantity(index)"
-                                                        class="btn btn-outline-secondary"
-                                                        type="button"
-                                                    >
-                                                        <i class="bi bi-plus"></i>
-                                                    </button>
+                                    <div class="card-body p-3">
+                                        <div class="row g-3">
+                                            <div class="col-12 col-md-4">
+                                                <div class="product-info">
+                                                    <strong class="d-block">{{ item.name }}</strong>
+                                                    <small class="text-muted">{{ item.brand }}</small>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2">
-                                                <span class="fw-bold text-success">
-                                                    {{ formatCLP(item.total) }}
-                                                </span>
+                                            <div class="col-6 col-md-2 text-center text-md-start">
+                                                <div class="price-display">
+                                                    <span class="fw-bold">{{ formatCLP(item.price) }}</span>
+                                                    <small class="d-block d-md-none text-muted">Precio unitario</small>
+                                                </div>
                                             </div>
-                                            <div class="col-md-1">
+                                            <div class="col-6 col-md-3">
+                                                <div class="quantity-controls">
+                                                    <div class="input-group input-group-sm">
+                                                        <button 
+                                                            @click="decreaseQuantity(index)"
+                                                            class="btn btn-outline-secondary"
+                                                            type="button"
+                                                        >
+                                                            <i class="bi bi-dash"></i>
+                                                        </button>
+                                                        <input 
+                                                            type="number" 
+                                                            v-model.number="item.quantity"
+                                                            @change="updateItemTotal(index)"
+                                                            class="form-control text-center"
+                                                            min="1"
+                                                            style="max-width: 80px;"
+                                                        >
+                                                        <button 
+                                                            @click="increaseQuantity(index)"
+                                                            class="btn btn-outline-secondary"
+                                                            type="button"
+                                                        >
+                                                            <i class="bi bi-plus"></i>
+                                                        </button>
+                                                    </div>
+                                                    <small class="d-block d-md-none text-muted text-center">Cantidad</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-2 text-center text-md-start">
+                                                <div class="total-display">
+                                                    <span class="fw-bold text-success">{{ formatCLP(item.total) }}</span>
+                                                    <small class="d-block d-md-none text-muted">Total</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-1 text-center">
                                                 <button 
                                                     @click="removeFromCart(index)"
                                                     class="btn btn-outline-danger btn-sm"
@@ -143,15 +156,15 @@
             </div>
 
             <!-- Right Side - Totals and Checkout -->
-            <div class="col-md-4 d-flex">
-                <div class="card flex-fill sticky-top" style="top: 20px;">
+            <div class="col-12 col-lg-4">
+                <div class="card h-100">
                     <div class="card-header text-white" style="background-color: #022e6b;">
                         <h5 class="mb-0">
                             <i class="bi bi-calculator me-2"></i>
                             Resumen de Venta
                         </h5>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <!-- Totals -->
                         <div class="totals-section mb-4">
                             <div class="d-flex justify-content-between mb-2">
@@ -191,7 +204,7 @@
                         </div>
 
                         <!-- Action Buttons -->
-                        <div class="action-buttons">
+                        <div class="action-buttons mt-auto">
                             <button 
                                 @click="completeSale"
                                 :disabled="cart.length === 0 || !paymentMethod"
@@ -209,16 +222,6 @@
                                 <i class="bi bi-trash me-2"></i>
                                 Limpiar Carrito
                             </button>
-                            
-                            <!-- Print Receipt Button - Hidden -->
-                            <!-- <button 
-                                @click="printReceipt"
-                                :disabled="cart.length === 0"
-                                class="btn btn-outline-info w-100"
-                            >
-                                <i class="bi bi-printer me-2"></i>
-                                Imprimir Ticket
-                            </button> -->
                         </div>
                     </div>
                 </div>
@@ -261,20 +264,19 @@
                             class="product-result card mb-2 cursor-pointer"
                             @click="selectProduct(product)"
                         >
-                            <div class="card-body py-2">
-                                <div class="row align-items-center">
-                                    <div class="col-md-6">
-                                        <strong>{{ product.name }}</strong>
-                                        <br>
-                                        <small class="text-muted">{{ product.brand }}</small>
-                                        <br>
-                                        <small class="text-info">{{ product.category }}</small>
+                            <div class="card-body py-3">
+                                <div class="row g-2">
+                                    <div class="col-12 col-md-6">
+                                        <strong class="d-block">{{ product.name }}</strong>
+                                        <small class="text-muted d-block">{{ product.brand }}</small>
+                                        <small class="text-info d-block">{{ product.category }}</small>
                                     </div>
-                                    <div class="col-md-3 text-center">
-                                        <span class="fw-bold text-success">{{ formatCLP(product.price) }}</span>
+                                    <div class="col-6 col-md-3 text-center">
+                                        <span class="fw-bold text-success d-block">{{ formatCLP(product.price) }}</span>
+                                        <small class="text-muted d-md-none">Precio</small>
                                     </div>
-                                    <div class="col-md-3 text-center">
-                                        <span class="badge" :class="product.stock > 10 ? 'bg-success' : product.stock > 0 ? 'bg-warning' : 'bg-danger'">
+                                    <div class="col-6 col-md-3 text-center">
+                                        <span class="badge d-block" :class="product.stock > 10 ? 'bg-success' : product.stock > 0 ? 'bg-warning' : 'bg-danger'">
                                             Stock: {{ product.stock }}
                                         </span>
                                     </div>
@@ -289,11 +291,22 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @click="showSearchModal = false">
+                    <button type="button" class="btn btn-secondary w-100 w-md-auto" @click="showSearchModal = false">
                         Cerrar
                     </button>
                 </div>
             </div>
+        </div>
+
+        <!-- Mobile Floating Action Button -->
+        <div class="mobile-fab d-lg-none">
+            <button 
+                @click="openSearchModal"
+                class="btn btn-primary rounded-circle"
+                title="Buscar Producto"
+            >
+                <i class="bi bi-search"></i>
+            </button>
         </div>
     </div>
 </template>
@@ -568,10 +581,6 @@ onUnmounted(() => {
     background-color: #f8f9fa;
 }
 
-.sticky-top {
-    z-index: 1020;
-}
-
 /* Custom scrollbar for cart */
 .cart-items {
     max-height: 400px;
@@ -608,15 +617,16 @@ onUnmounted(() => {
     align-items: center;
     justify-content: center;
     z-index: 1050;
+    padding: 1rem;
 }
 
 .modal-content {
     background: white;
     border-radius: 8px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    width: 90%;
+    width: 100%;
     max-width: 800px;
-    max-height: 80vh;
+    max-height: 90vh;
     overflow: hidden;
 }
 
@@ -638,18 +648,6 @@ onUnmounted(() => {
     background-color: #f8f9fa;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .sticky-top {
-        position: static !important;
-    }
-    
-    .modal-content {
-        width: 95%;
-        margin: 1rem;
-    }
-}
-
 /* Equal height cards */
 .row {
     align-items: stretch;
@@ -664,4 +662,314 @@ onUnmounted(() => {
 .card-body {
     flex: 1;
 }
+
+/* Touch-friendly improvements */
+.btn {
+    min-height: 44px; /* Minimum touch target size */
+}
+
+.form-control {
+    min-height: 44px;
+}
+
+/* Product info styling */
+.product-info strong {
+    color: #022e6b;
+    font-size: 1rem;
+}
+
+.product-info small {
+    color: #666;
+    font-size: 0.875rem;
+}
+
+.price-display,
+.total-display,
+.quantity-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .price-display,
+    .total-display,
+    .quantity-controls {
+        align-items: flex-start;
+    }
+}
+
+/* Search results improvements */
+.search-results .product-result {
+    transition: all 0.2s ease;
+    border: 1px solid #dee2e6;
+}
+
+.search-results .product-result:hover {
+    border-color: #022e6b;
+    box-shadow: 0 2px 8px rgba(2, 46, 107, 0.1);
+}
+
+.search-results .product-result .badge {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Mobile-first responsive design */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 0.5rem;
+    }
+    
+    .card-header h4 {
+        font-size: 1.25rem;
+    }
+    
+    .card-header h5 {
+        font-size: 1.1rem;
+    }
+    
+    .form-control-lg {
+        font-size: 1rem;
+        padding: 0.75rem;
+    }
+    
+    .btn-lg {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+    
+    .cart-item .card-body {
+        padding: 1rem;
+    }
+    
+    .cart-item .row {
+        margin: 0;
+    }
+    
+    .cart-item .col-6 {
+        padding: 0.5rem;
+    }
+    
+    .quantity-controls .input-group {
+        justify-content: center;
+    }
+    
+    .quantity-controls .input-group .btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+    
+    .quantity-controls .form-control {
+        text-align: center;
+        font-size: 0.875rem;
+        padding: 0.5rem;
+    }
+    
+    .payment-methods .form-check {
+        padding: 0.75rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .payment-methods .form-check:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .payment-methods .form-check-input {
+        margin-top: 0.25rem;
+    }
+    
+    .action-buttons .btn {
+        padding: 1rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+    
+    .modal-content {
+        margin: 0;
+        border-radius: 0;
+        height: 100vh;
+        max-height: 100vh;
+    }
+    
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 1rem;
+    }
+    
+    .search-results .product-result {
+        margin-bottom: 0.75rem;
+    }
+    
+    .search-results .product-result .card-body {
+        padding: 1rem;
+    }
+    
+    /* Mobile cart improvements */
+    .cart-items {
+        max-height: 60vh;
+    }
+    
+    .cart-item {
+        border-left: 4px solid #022e6b;
+    }
+    
+    .cart-item .product-info strong {
+        font-size: 1.1rem;
+        line-height: 1.3;
+    }
+    
+    .cart-item .product-info small {
+        font-size: 0.8rem;
+        opacity: 0.8;
+    }
+    
+    /* Mobile button improvements */
+    .btn-icon {
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Mobile search improvements */
+    .search-results .product-result {
+        border-left: 4px solid #e0e0e0;
+    }
+    
+    .search-results .product-result:hover {
+        border-left-color: #022e6b;
+    }
+    
+    /* Button group payment method mobile improvements */
+    .payment-methods .btn-group {
+        flex-direction: column;
+    }
+    
+    .payment-methods .btn-group .btn {
+        border-radius: 0.375rem !important;
+        margin-bottom: 0.5rem;
+        padding: 0.75rem;
+        border: 1px solid #dee2e6;
+    }
+    
+    .payment-methods .btn-group .btn:hover {
+        background-color: #f8f9fa;
+    }
+}
+
+@media (max-width: 576px) {
+    .container-fluid {
+        padding: 0.25rem;
+    }
+    
+    .card-header {
+        padding: 0.75rem 1rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .cart-item .card-body {
+        padding: 0.75rem;
+    }
+    
+    .cart-item .col-6 {
+        padding: 0.25rem;
+    }
+    
+    .btn-lg {
+        padding: 0.625rem 0.875rem;
+        font-size: 0.9rem;
+    }
+    
+    .form-control-lg {
+        padding: 0.625rem;
+        font-size: 0.9rem;
+    }
+    
+    .modal-content {
+        border-radius: 0;
+    }
+    
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 0.75rem;
+    }
+    
+    /* Extra small screen improvements */
+    .cart-item .product-info strong {
+        font-size: 1rem;
+    }
+    
+    .cart-item .product-info small {
+        font-size: 0.75rem;
+    }
+    
+    .quantity-controls .input-group {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .quantity-controls .input-group .form-control {
+        order: 2;
+        margin: 0.25rem 0;
+    }
+    
+    .quantity-controls .input-group .btn {
+        order: 1;
+        flex: 1;
+        min-height: 40px;
+    }
+    
+    .payment-methods .form-check {
+        padding: 0.5rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .action-buttons .btn {
+        padding: 0.875rem;
+        font-size: 1rem;
+    }
+}
+
+/* Mobile Floating Action Button */
+.mobile-fab {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1040;
+}
+
+.mobile-fab .btn {
+    width: 56px;
+    height: 56px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.mobile-fab .btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 576px) {
+    .mobile-fab {
+        bottom: 1.5rem;
+        right: 1.5rem;
+    }
+    
+    .mobile-fab .btn {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+
 </style>
