@@ -174,7 +174,7 @@ const handleLogin = async () => {
   try {
     // Make the login API call
     let body = {
-      "usernameOrEmail": formData.username,
+      "usernameOrEmail": formData.username.toLowerCase().trim(),
       "password": formData.password
     }
     
