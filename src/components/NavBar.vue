@@ -1,5 +1,51 @@
 <script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import logoUrl from '@/assets/logo.jpg'
+import authService from '@/services/authService'
+
+const router = useRouter()
+
+// Authentication state
+const isAuthenticated = ref(false)
+const userInfo = ref(null)
+const isLoading = ref(false)
+
+// Function to check authentication status and get user info
+const checkAuthStatus = async () => {
+  try {
+    isLoading.value = true
+    
+    if (authService.isAuthenticated()) {
+      // Get user info to show in navbar
+      const user = await authService.getCurrentUser()
+      userInfo.value = user
+      isAuthenticated.value = true
+    } else {
+      isAuthenticated.value = false
+      userInfo.value = null
+    }
+  } catch (error) {
+    console.error('Error checking auth status:', error)
+    isAuthenticated.value = false
+    userInfo.value = null
+  } finally {
+    isLoading.value = false
+  }
+}
+
+// Logout function
+const handleLogout = () => {
+  authService.logout()
+  isAuthenticated.value = false
+  userInfo.value = null
+  router.push('/login')
+}
+
+// Check authentication status when component mounts
+onMounted(() => {
+  checkAuthStatus()
+})
 </script>
 
 <template>
@@ -36,7 +82,7 @@ import logoUrl from '@/assets/logo.jpg'
                             <li><router-link class="dropdown-item" to="/productos"><b>Todos los productos</b></router-link></li>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown" v-show="!isAuthenticated">
+                    <li class="nav-item dropdown" v-show="isAuthenticated">
                         <a class="nav-link dropdown-toggle" href="#" id="inventoryDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             Inventario
@@ -50,6 +96,24 @@ import logoUrl from '@/assets/logo.jpg'
                         <a class="nav-link transition duration-300" href="#">Nosotros</a>
                     </li>
                 </ul>
+                
+                <!-- User section - moved to the right -->
+                <div class="d-flex align-items-center gap-3 ms-auto">
+                    <!-- Show user info when authenticated -->
+                    <div v-if="isAuthenticated && userInfo" class="d-flex align-items-center gap-2 text-white">
+                        <i class="bi bi-person-circle"></i>
+                        <span class="small">{{ userInfo.username || userInfo.email }}</span>
+                        <span class="badge bg-success small">{{ userInfo.role }}</span>
+                    </div>
+                    
+                    <!-- Login button when not authenticated -->
+                    <div v-if="isAuthenticated" class="d-flex gap-2">
+                        <button @click="handleLogout" class="btn btn-outline-light btn-sm">
+                            <i class="bi bi-box-arrow-right me-1"></i>
+                            Cerrar Sesión
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>

@@ -51,6 +51,7 @@
 
 <script>
 import productService from '@/services/productService'
+import authService from '@/services/authService'
 import {
   SummaryCards,
   SearchFilters,
@@ -104,6 +105,28 @@ export default {
   },
   
   async mounted() {
+    // Check authentication and admin role before loading data
+    const authResult = await authService.validateAuthAndRole()
+    
+    if (!authResult.isValid) {
+      if (authResult.reason === 'no_token') {
+        // No token found, redirect to login
+        this.$router.push('/login')
+        return
+      } else if (authResult.reason === 'not_admin') {
+        // User is not admin, redirect to home or show error
+        alert('No tienes permisos para acceder a esta sección. Se requiere rol de Administrador.')
+        this.$router.push('/')
+        return
+      } else {
+        // Error occurred, redirect to login
+        console.error('Authentication error:', authResult.reason)
+        this.$router.push('/login')
+        return
+      }
+    }
+    
+    // If authentication is valid, load the data
     await this.loadData()
   },
   

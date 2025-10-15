@@ -97,8 +97,33 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import axios from 'axios'
+import { useRouter } from 'vue-router'
+import authService from '@/services/authService'
+
+const router = useRouter()
+
+// Function to check if user already has a valid token
+const checkExistingAuth = async () => {
+  if (authService.isAuthenticated()) {
+    try {
+      // Verify the token is still valid by checking user info
+      await authService.getCurrentUser()
+      // Token is valid, redirect to home
+      router.push('/')
+    } catch (error) {
+      // Token is invalid, clear it and stay on login page
+      console.log('Token is invalid, staying on login page')
+      authService.logout()
+    }
+  }
+}
+
+// Check for existing authentication when component mounts
+onMounted(() => {
+  checkExistingAuth()
+})
 
 // Form data
 const formData = reactive({
@@ -142,23 +167,53 @@ const handleLogin = async () => {
   
   isLoading.value = true
   
+  // Clear any previous errors
+  errors.username = ''
+  errors.password = ''
+  
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    // Here you would typically make your actual login API call
+    // Make the login API call
     let body = {
       "usernameOrEmail": formData.username,
       "password": formData.password
     }
+    
     // Use proxy in development, direct URL in production
     let url = import.meta.env.DEV ? '/api/Auth/login' : `${import.meta.env.VITE_API_URL}/api/Auth/login`
     let response = await axios.post(url, body)
-    console.log(response)
-
+    
+    if (response.status === 200) {
+      // Store the token in a cookie that expires at 23:59:59 of the current day
+      const token = response.data.token
+      const now = new Date()
+      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59)
+      const expiresAt = endOfDay.toUTCString()
+      document.cookie = `authToken=${token}; path=/; expires=${expiresAt}; secure; samesite=strict`
+      
+      // Redirect to home and force navbar to reload by refreshing the page
+      window.location.href = '/inventario/punto-de-venta'
+    }
     
   } catch (error) {
     console.error('Login error:', error)
+    
+    // Handle different types of errors
+    if (error.response) {
+      // Server responded with error status
+      if (error.response.status === 401) {
+        errors.password = 'Usuario o contraseña incorrectos'
+      } else if (error.response.status === 400) {
+        errors.username = 'Datos de login inválidos'
+      } else {
+        errors.username = 'Error del servidor. Intenta nuevamente.'
+      }
+    } else if (error.request) {
+      // Network error
+      errors.username = 'Error de conexión. Verifica tu conexión a internet.'
+    } else {
+      // Other error
+      errors.username = 'Error inesperado. Intenta nuevamente.'
+    }
   } finally {
     isLoading.value = false
   }

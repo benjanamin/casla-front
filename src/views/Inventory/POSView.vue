@@ -313,7 +313,11 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import productService from '@/services/productService'
+import authService from '@/services/authService'
+
+const router = useRouter()
 
 // Reactive data
 const scannedCode = ref('')
@@ -547,8 +551,16 @@ const handleKeydown = (event) => {
     }
 }
 
-// Focus scanner input on mount
-onMounted(() => {
+// Focus scanner input on mount and check authentication
+onMounted(async () => {
+    // Check authentication (any logged-in user can access POS)
+    if (!authService.isAuthenticated()) {
+        // No token found, redirect to login
+        router.push('/login')
+        return
+    }
+    
+    // If authentication is valid, focus the scanner input
     const scannerInput = document.getElementById('productScanner')
     if (scannerInput) {
         scannerInput.focus()
