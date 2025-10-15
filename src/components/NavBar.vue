@@ -36,7 +36,7 @@ import logoUrl from '@/assets/logo.jpg'
                             <li><router-link class="dropdown-item" to="/productos"><b>Todos los productos</b></router-link></li>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" v-show="!isAuthenticated">
                         <a class="nav-link dropdown-toggle" href="#" id="inventoryDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             Inventario

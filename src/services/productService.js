@@ -3,6 +3,9 @@
 
 class ProductService {
     constructor() {
+        // Get API URL from environment variables
+        this.apiUrl = import.meta.env.BACKEND_API_URL
+        
         // In a real application, this would come from your backend API
         this.products = [
             { 
@@ -296,6 +299,81 @@ class ProductService {
             lowStockCount,
             categories
         })
+    }
+
+    // ===== REAL API METHODS FOR BACKEND INTEGRATION =====
+    
+    // Generic API call method
+    async apiCall(endpoint, options = {}) {
+        const url = `${this.apiUrl}${endpoint}`
+        const defaultOptions = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+        
+        const config = { ...defaultOptions, ...options }
+        
+        try {
+            const response = await fetch(url, config)
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`)
+            }
+            
+            return await response.json()
+        } catch (error) {
+            console.error(`API call failed for ${endpoint}:`, error)
+            throw error
+        }
+    }
+
+    // Get all products from backend
+    async getAllProductsFromAPI() {
+        return this.apiCall('/products')
+    }
+
+    // Get product by ID from backend
+    async getProductByIdFromAPI(id) {
+        return this.apiCall(`/products/${id}`)
+    }
+
+    // Create new product via API
+    async createProductAPI(productData) {
+        return this.apiCall('/products', {
+            method: 'POST',
+            body: JSON.stringify(productData)
+        })
+    }
+
+    // Update product via API
+    async updateProductAPI(id, productData) {
+        return this.apiCall(`/products/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(productData)
+        })
+    }
+
+    // Delete product via API
+    async deleteProductAPI(id) {
+        return this.apiCall(`/products/${id}`, {
+            method: 'DELETE'
+        })
+    }
+
+    // Search products via API
+    async searchProductsAPI(query) {
+        return this.apiCall(`/products/search?q=${encodeURIComponent(query)}`)
+    }
+
+    // Get products with pagination via API
+    async getProductsWithPaginationAPI(page = 1, limit = 10, search = '') {
+        const params = new URLSearchParams({
+            page: page.toString(),
+            limit: limit.toString(),
+            ...(search && { search })
+        })
+        return this.apiCall(`/products?${params}`)
     }
 }
 

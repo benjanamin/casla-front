@@ -4,15 +4,14 @@
     <div class="inventory-header">
       <h1 class="primary-color">Gestión de Inventario</h1>
       <div class="header-actions">
-        <button @click="showAddProductModal = true" class="btn btn-primary">
-          <span class="icon">+</span> Agregar Producto
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+          Agregar Nuevo Producto
         </button>
-        <button @click="showBulkAddModal = true" class="btn btn-secondary">
-          <span class="icon">📦</span> Agregar Múltiples
+        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#bulkAddModal">
+          <span class="icon">📦</span> Ingresar Productos
         </button>
       </div>
     </div>
-
     <!-- Summary Cards -->
     <SummaryCards :summary="summary" />
 
@@ -36,15 +35,16 @@
       @recordTransaction="recordTransaction"
       @delete="deleteProduct"
     />
-
+    
     <!-- Add Product Modal -->
     <AddProductModal
-      :show="showAddProductModal"
       :categories="summary.categories"
       :suppliers="suppliers"
-      @close="showAddProductModal = false"
       @submit="addNewProduct"
     />
+
+    <!-- Bulk Add Modal -->
+    <BulkAddModal @submit="addBulkProducts" />
 
   </div>
 </template>
@@ -55,8 +55,8 @@ import {
   SummaryCards,
   SearchFilters,
   ProductsTable,
-  BaseModal,
   AddProductModal,
+  BulkAddModal,
 } from '@/components/inventory'
 
 export default {
@@ -65,8 +65,8 @@ export default {
     SummaryCards,
     SearchFilters,
     ProductsTable,
-    BaseModal,
     AddProductModal,
+    BulkAddModal
   },
   data() {
     return {
@@ -84,8 +84,6 @@ export default {
       filteredProducts: [],
       
       // Modals
-      showAddProductModal: false,
-      showBulkAddModal: false,
       showEditModal: false,
       showTransactionModal: false,
       showHistoryModal: false,
@@ -100,7 +98,6 @@ export default {
         supplier: ''
       },
       
-      bulkProductsText: '',
       priceHistory: [],
       historyProduct: {}
     }
@@ -171,7 +168,6 @@ export default {
     async addNewProduct(productData) {
       try {
         await productService.addProduct(productData)
-        this.showAddProductModal = false
         await this.loadData()
         this.applyFilters()
       } catch (error) {
@@ -179,36 +175,12 @@ export default {
       }
     },
     
-    async addBulkProducts() {
+    async addBulkProducts(products) {
       try {
-        const lines = this.bulkProductsText.trim().split('\n')
-        const products = []
-        
-        for (const line of lines) {
-          if (line.trim()) {
-            const [code, name, brand, category, buyPrice, sellPrice, supplier, stock, description] = line.split('|')
-            if (code && name) {
-              products.push({
-                code: code.trim(),
-                name: name.trim(),
-                brand: brand?.trim() || '',
-                category: category?.trim() || '',
-                buyPrice: parseFloat(buyPrice) || 0,
-                sellPrice: parseFloat(sellPrice) || 0,
-                supplier: supplier?.trim() || '',
-                stock: parseInt(stock) || 0,
-                description: description?.trim() || ''
-              })
-            }
-          }
-        }
-        
         for (const product of products) {
           await productService.addProduct(product)
         }
         
-        this.showBulkAddModal = false
-        this.bulkProductsText = ''
         await this.loadData()
         this.applyFilters()
       } catch (error) {
@@ -396,19 +368,7 @@ export default {
   font-size: 18px;
 }
 
-.bulk-add-instructions {
-  margin-bottom: 20px;
-}
 
-.bulk-textarea {
-  width: 100%;
-  font-family: monospace;
-  font-size: 12px;
-  padding: 12px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  resize: vertical;
-}
 
 .transaction-info {
   text-align: center;

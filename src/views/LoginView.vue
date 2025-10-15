@@ -98,6 +98,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
+import axios from 'axios'
 
 // Form data
 const formData = reactive({
@@ -146,18 +147,18 @@ const handleLogin = async () => {
     await new Promise(resolve => setTimeout(resolve, 2000))
     
     // Here you would typically make your actual login API call
-    console.log('Login attempt:', {
-      username: formData.username,
-      password: formData.password,
-      rememberMe: formData.rememberMe
-    })
-    
-    // Handle successful login
-    // router.push('/dashboard')
+    let body = {
+      "usernameOrEmail": formData.username,
+      "password": formData.password
+    }
+    // Use proxy in development, direct URL in production
+    let url = import.meta.env.DEV ? '/api/Auth/login' : `${import.meta.env.VITE_API_URL}/api/Auth/login`
+    let response = await axios.post(url, body)
+    console.log(response)
+
     
   } catch (error) {
     console.error('Login error:', error)
-    // Handle login error
   } finally {
     isLoading.value = false
   }
