@@ -107,9 +107,10 @@ class ProductService {
     }
 
     // Get product by barcode/code
-    getProductByCode(code) {
-        const product = this.products.find(p => p.code === code)
-        return Promise.resolve(product || null)
+    async getProductByCode(code) {
+        ///api/Product/get-by-barcode/
+        const response = this.apiCall(`/api/Product/get-by-barcode/${code}`)
+        return response
     }
 
     // Search products by query (name, brand, or code)
@@ -335,7 +336,7 @@ class ProductService {
 
     // Get product by ID from backend
     async getProductByIdFromAPI(id) {
-        return this.apiCall(`/products/${id}`)
+        return this.apiCall(`/api/Product/${id}`)
     }
 
     // Create new product via API

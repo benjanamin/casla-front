@@ -80,6 +80,8 @@ onUnmounted(() => {
                             :key="product.id" 
                             :brand="product.brand" 
                             :name="product.name" 
+                            :image="product.image"
+                            :category="product.category"
                         />
                     </div>
                 </div>

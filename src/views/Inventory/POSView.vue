@@ -316,6 +316,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import productService from '@/services/productService'
 import authService from '@/services/authService'
+import Swal from 'sweetalert2'
 
 const router = useRouter()
 
@@ -376,8 +377,11 @@ const scanProduct = async () => {
             scannedCode.value = ''
         }
     } catch (error) {
-        showErrorMessage('Error al escanear producto')
-        console.error('Scan error:', error)
+        Swal.fire({
+            title: 'Ups',
+            icon: 'warning',
+            text: 'No se pudo obtener el producto. Inténtalo de nuevo.'
+        })
     }
 }
 

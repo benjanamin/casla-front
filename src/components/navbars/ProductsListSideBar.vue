@@ -40,7 +40,7 @@
       </div>
     </div>
 
-    <!-- Price Range Section -->
+    <!-- Price Range Section
     <div class="sidebar-section">
       <h5 class="sidebar-title">
         <i class="bi bi-currency-dollar me-2"></i>Rango de Precio
@@ -78,9 +78,9 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <!-- Brands Section -->
+    <!-- Brands Section
     <div class="sidebar-section">
       <h5 class="sidebar-title">
         <i class="bi bi-award me-2"></i>Marcas
@@ -102,7 +102,7 @@
           <span class="filter-count">({{ brand.count }})</span>
         </label>
       </div>
-    </div>
+    </div> -->
 
     <!-- Clear Filters Button -->
     <div class="sidebar-section">

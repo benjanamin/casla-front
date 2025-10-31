@@ -13,41 +13,55 @@ const showFilters = ref(false);
 
 // Real products data matching your business categories
 const products = ref([
-  // Productos metálicos
-  { id: 1, brand: 'Casla', name: 'Perfil de Aluminio 6063', category: 'productos-metalicos', price: 25000, image: 'https://picsum.photos/300/200?random=1' },
-  { id: 2, brand: 'Casla', name: 'Tubo Cuadrado de Acero', category: 'productos-metalicos', price: 18000, image: 'https://picsum.photos/300/200?random=2' },
-  { id: 3, brand: 'Casla', name: 'Placa de Acero Inoxidable', category: 'productos-metalicos', price: 45000, image: 'https://picsum.photos/300/200?random=3' },
-  { id: 4, brand: 'Casla', name: 'Varilla Rosca M8', category: 'productos-metalicos', price: 1200, image: 'https://picsum.photos/300/200?random=4' },
-  
-  // Abrasivos
-  { id: 5, brand: 'Casla', name: 'Disco de Corte 4.5"', category: 'abrasivos', price: 3500, image: 'https://picsum.photos/300/200?random=5' },
-  { id: 6, brand: 'Casla', name: 'Lija de Agua #80', category: 'abrasivos', price: 800, image: 'https://picsum.photos/300/200?random=6' },
-  { id: 7, brand: 'Casla', name: 'Disco de Desbaste 7"', category: 'abrasivos', price: 4200, image: 'https://picsum.photos/300/200?random=7' },
-  { id: 8, brand: 'Casla', name: 'Papel de Lija #120', category: 'abrasivos', price: 600, image: 'https://picsum.photos/300/200?random=8' },
-  
-  // Fijaciones
-  { id: 9, brand: 'Casla', name: 'Tornillo Phillips M6x20', category: 'fijaciones', price: 150, image: 'https://picsum.photos/300/200?random=9' },
-  { id: 10, brand: 'Casla', name: 'Tuerca Hexagonal M8', category: 'fijaciones', price: 80, image: 'https://picsum.photos/300/200?random=10' },
-  { id: 11, brand: 'Casla', name: 'Arandela Plana M10', category: 'fijaciones', price: 50, image: 'https://picsum.photos/300/200?random=11' },
-  { id: 12, brand: 'Casla', name: 'Tornillo Allen M12x30', category: 'fijaciones', price: 450, image: 'https://picsum.photos/300/200?random=12' },
-  
-  // Elementos de protección personal
-  { id: 13, brand: 'Casla', name: 'Casco de Seguridad', category: 'elementos-de-proteccion-personal', price: 8500, image: 'https://picsum.photos/300/200?random=13' },
-  { id: 14, brand: 'Casla', name: 'Guantes de Trabajo', category: 'elementos-de-proteccion-personal', price: 3200, image: 'https://picsum.photos/300/200?random=14' },
-  { id: 15, brand: 'Casla', name: 'Gafas de Seguridad', category: 'elementos-de-proteccion-personal', price: 2800, image: 'https://picsum.photos/300/200?random=15' },
-  { id: 16, brand: 'Casla', name: 'Protección Auditiva', category: 'elementos-de-proteccion-personal', price: 1800, image: 'https://picsum.photos/300/200?random=16' },
-  
-  // Materiales de construcción
-  { id: 17, brand: 'Casla', name: 'Cemento Portland', category: 'materiales-de-construccion', price: 12000, image: 'https://picsum.photos/300/200?random=17' },
-  { id: 18, brand: 'Casla', name: 'Arena Fina', category: 'materiales-de-construccion', price: 8000, image: 'https://picsum.photos/300/200?random=18' },
-  { id: 19, brand: 'Casla', name: 'Ladrillo Común', category: 'materiales-de-construccion', price: 150, image: 'https://picsum.photos/300/200?random=19' },
-  { id: 20, brand: 'Casla', name: 'Piedra Partida', category: 'materiales-de-construccion', price: 9500, image: 'https://picsum.photos/300/200?random=20' },
-  
-  // Ferreteria
-  { id: 21, brand: 'Casla', name: 'Martillo de Carpintero', category: 'ferreteria', price: 4500, image: 'https://picsum.photos/300/200?random=21' },
-  { id: 22, brand: 'Casla', name: 'Destornillador Phillips', category: 'ferreteria', price: 1200, image: 'https://picsum.photos/300/200?random=22' },
-  { id: 23, brand: 'Casla', name: 'Alicate Universal', category: 'ferreteria', price: 2800, image: 'https://picsum.photos/300/200?random=23' },
-  { id: 24, brand: 'Casla', name: 'Cinta Métrica 5m', category: 'ferreteria', price: 1800, image: 'https://picsum.photos/300/200?random=24' },
+  // Generated from public/products folder
+  { id: 1, brand: 'Casla', name: 'Autoperforante hexagonal con golilla', category: 'productos-metalicos', price: 25000, image: '/products/autoperforante-hexagonal-con-golilla-300x200.png' },
+  { id: 2, brand: 'Casla', name: 'Autoperforante hexagonal con golilla (alt)', category: 'productos-metalicos', price: 25000, image: '/products/autoperforante_hexagonal_con_golilla.-300x171.png' },
+  { id: 3, brand: 'Casla', name: 'Barandas 1', category: 'productos-metalicos', price: 30000, image: '/products/barandas-1-225x300.jpg', largeImage: '/products/barandas-1-225x300.jpg'},
+  { id: 4, brand: 'Casla', name: 'Barandas 2', category: 'productos-metalicos', price: 30000, image: '/products/barandas-2-168x300.jpg', largeImage: '/products/barandas-2-168x300.jpg' },
+  { id: 5, brand: 'Casla', name: 'Barandas', category: 'productos-metalicos', price: 30000, image: '/products/barandas.jpg', largeImage: '/products/barandas.jpg' },
+  { id: 6, brand: 'Casla', name: 'Brocas', category: 'abrasivos', price: 12000, image: '/products/brocas-300x185.png' },
+  { id: 7, brand: 'Casla', name: 'Broca SDS Plus', category: 'abrasivos', price: 12000, image: '/products/Broca_sds_plus.jpg-2550×3300-150x150.png' },
+  { id: 8, brand: 'Casla', name: 'Buzo Minero Poplin', category: 'elementos-de-proteccion-personal', price: 18000, image: '/products/buzo-minero-poplin-300x300.jpg' },
+  { id: 9, brand: 'Casla', name: 'Cabeza Lenteja Broca', category: 'fijaciones', price: 8000, image: '/products/cabeza_lenteja_broca-150x150.png' },
+  { id: 10, brand: 'Casla', name: 'Cadenas Inox', category: 'productos-metalicos', price: 20000, image: '/products/cadenas_inox.jpg-2950×3545-150x150.png' },
+  { id: 11, brand: 'Casla', name: 'Caja Mascarilla', category: 'elementos-de-proteccion-personal', price: 9000, image: '/products/caja-mascarilla-300x225.jpg' },
+  { id: 12, brand: 'Casla', name: 'Choca Carros', category: 'productos-metalicos', price: 15000, image: '/products/choca-carros-225x300.jpg' },
+  { id: 13, brand: 'Casla', name: 'Clavo Techo Paragua', category: 'fijaciones', price: 5000, image: '/products/clavo-techo-paragua-300x217.png' },
+  { id: 14, brand: 'Casla', name: 'Corral Carros', category: 'productos-metalicos', price: 15000, image: '/products/corral-carros-225x300.jpg' },
+  { id: 15, brand: 'Casla', name: 'Dado Magnético', category: 'ferreteria', price: 4000, image: '/products/dado-magnetico-300x142.png' },
+  { id: 16, brand: 'Casla', name: 'Disco de Corte A330', category: 'abrasivos', price: 3500, image: '/products/Disco-de-corte-A330-300x219.jpg', largeImage: '/products/Disco-de-corte-A330-min-300x283.jpg' },
+  { id: 17, brand: 'Casla', name: 'Disco de Corte A330 (alt)', category: 'abrasivos', price: 3500, image: '/products/Disco-de-corte-A330-min-300x283.jpg', largeImage: '/products/Disco-de-corte-A330-min-300x283.jpg' },
+  { id: 18, brand: 'Casla', name: 'Disco de Corte Finos A960', category: 'abrasivos', price: 3500, image: '/products/disco-de-corte-finos-a960-min-300x219.jpg' },
+  { id: 19, brand: 'Casla', name: 'Discos Flap SMT324 Extra', category: 'abrasivos', price: 4200, image: '/products/Discos-flap-smt324-extra-min-1-300x219.jpg', largeImage: '/products/Discos-flap-smt324-extra-min-300x283.jpg' },
+  { id: 20, brand: 'Casla', name: 'Discos Flap SMT324 Extra (alt)', category: 'abrasivos', price: 4200, image: '/products/Discos-flap-smt324-extra-min-300x283.jpg', largeImage: '/products/Discos-flap-smt324-extra-min-300x283.jpg' },
+  { id: 21, brand: 'Casla', name: 'Disp Saly', category: 'ferreteria', price: 10000, image: '/products/disp salyy.JPG' },
+  { id: 22, brand: 'Casla', name: 'Dispensador 1lt Pintura', category: 'ferreteria', price: 10000, image: '/products/dispensador 1 lt pintura electroestatica.png' },
+  { id: 23, brand: 'Casla', name: 'Dispensador Toma Temp y Alcohol', category: 'ferreteria', price: 10000, image: '/products/dispensador toma temperatura y alcohol gel.JPG', largeImage: '/products/dispensador toma temperatura y alcohol gel.JPG 02.JPG' },
+  { id: 24, brand: 'Casla', name: 'Dispensador Toma Temp y Alcohol (alt)', category: 'ferreteria', price: 10000, image: '/products/dispensador toma temperatura y alcohol gel.JPG 02.JPG', largeImage: '/products/dispensador toma temperatura y alcohol gel.JPG 02.JPG' },
+  { id: 25, brand: 'Casla', name: 'Dispensador Alcohol Gel 10', category: 'ferreteria', price: 10000, image: '/products/dispensador-alcohol-gel-10.png-125x300.jpg' },
+  { id: 26, brand: 'Casla', name: 'Dispensador Alcohol Gel 11', category: 'ferreteria', price: 10000, image: '/products/dispensador-alcohol-gel-11.png-101x300.jpg' },
+  { id: 27, brand: 'Casla', name: 'Fijaciones Cubierta', category: 'fijaciones', price: 8000, image: '/products/Fijaciones-cubierta-300x244.png' },
+  { id: 28, brand: 'Casla', name: 'Gateras 1', category: 'ferreteria', price: 12000, image: '/products/gateras-1-225x300.jpg' },
+  { id: 29, brand: 'Casla', name: 'Gateras', category: 'ferreteria', price: 12000, image: '/products/gateras-225x300.jpg' },
+  { id: 30, brand: 'Casla', name: 'Guante Soldador Rojo', category: 'elementos-de-proteccion-personal', price: 3500, image: '/products/guante-soldador-rojo-150x150.jpg' },
+  { id: 31, brand: 'Casla', name: 'Guantes Cabritilla Blanco 2', category: 'elementos-de-proteccion-personal', price: 3500, image: '/products/guantes-cabritilla-blanco-con-y-sin-forro-2-300x300.jpg', largeImage: '/products/guantes-cabritilla-blanco-con-y-sin-forro-300x300.jpg' },
+  { id: 32, brand: 'Casla', name: 'Guantes Cabritilla Blanco', category: 'elementos-de-proteccion-personal', price: 3500, image: '/products/guantes-cabritilla-blanco-con-y-sin-forro-300x300.jpg', largeImage: '/products/guantes-cabritilla-blanco-con-y-sin-forro-300x300.jpg' },
+  { id: 33, brand: 'Casla', name: 'Guantes Kron CN Lona Palma Verde', category: 'elementos-de-proteccion-personal', price: 3500, image: '/products/guantes-kron-cn-lona-palma-verde-descarne-150x150.jpg' },
+  { id: 34, brand: 'Casla', name: 'Guantes Soldador Azul Kevlar', category: 'elementos-de-proteccion-personal', price: 3500, image: '/products/guantes-soldador-azul-kevlar-refuerzo-pistola-150x150.jpg' },
+  { id: 35, brand: 'Casla', name: 'IMG 0080', category: 'ferreteria', price: 10000, image: '/products/IMG_0080-300x168.jpg' },
+  { id: 36, brand: 'Casla', name: 'IMG 0081', category: 'ferreteria', price: 10000, image: '/products/IMG_0081-233x300.jpg' },
+  { id: 37, brand: 'Casla', name: 'Mascara Soldar 1', category: 'elementos-de-proteccion-personal', price: 12000, image: '/products/mascara-soldar-1-300x268.jpg', largeImage: '/products/mascara-soldar-300x268.jpg' },
+  { id: 38, brand: 'Casla', name: 'Mascara Soldar', category: 'elementos-de-proteccion-personal', price: 12000, image: '/products/mascara-soldar-300x268.jpg', largeImage: '/products/mascara-soldar-300x268.jpg' },
+  { id: 39, brand: 'Casla', name: 'Mascarillas', category: 'elementos-de-proteccion-personal', price: 12000, image: '/products/mascarillas-300x130.png' },
+  { id: 40, brand: 'Casla', name: 'Pasarelas 1', category: 'productos-metalicos', price: 20000, image: '/products/pasarelas-1-169x300.jpg' },
+  { id: 41, brand: 'Casla', name: 'Pasarelas 2', category: 'productos-metalicos', price: 20000, image: '/products/pasarelas-2-169x300.jpg' },
+  { id: 42, brand: 'Casla', name: 'Perno Anclaje 2', category: 'fijaciones', price: 8000, image: '/products/perno-anclaje-2-150x150.png', largeImage: '/products/perno-anclaje-300x215.png' },
+  { id: 43, brand: 'Casla', name: 'Perno Anclaje', category: 'fijaciones', price: 8000, image: '/products/perno-anclaje-300x215.png', largeImage: '/products/perno-anclaje-300x215.png' },
+  { id: 44, brand: 'Casla', name: 'Pintura Esmalte al Agua', category: 'ferreteria', price: 18000, image: '/products/Pintura-Esmalte-al-agua-con-nanoparticulas-de-cobre-min-2-300x219.jpg' },
+  { id: 45, brand: 'Casla', name: 'Protección Tras Tienda 1', category: 'productos-metalicos', price: 9000, image: '/products/proteccion-tras-tienda-1-300x225.jpg' },
+  { id: 46, brand: 'Casla', name: 'Protección Tras Tienda 2', category: 'productos-metalicos', price: 9000, image: '/products/proteccion-tras-tienda-2-225x300.jpg' },
+  { id: 47, brand: 'Casla', name: 'Punta Phillip', category: 'ferreteria', price: 2000, image: '/products/Punta-Phillip-300x56.png' },
+  { id: 48, brand: 'Casla', name: 'Punta Phillips Larga', category: 'ferreteria', price: 2000, image: '/products/punta-phillips-larga--300x91.png' },
 ]);
 
 // Filter state
@@ -258,6 +272,9 @@ if (category) {
               <ProductCard 
                 :brand="product.brand"
                 :name="product.name"
+                :image="product.image"
+                :large-image="product.largeImage"
+                :category="product.category"
               />
             </div>
           </div>
@@ -453,6 +470,17 @@ if (category) {
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+ 
+.product-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-item .card {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .product-item:hover {
