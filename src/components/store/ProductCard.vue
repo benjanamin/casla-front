@@ -72,7 +72,7 @@ const whatsappHref = computed(() => {
   const text = `Hola, me interesa consultar el precio del producto: ${props.name}`
   const encoded = encodeURIComponent(text)
   // Put your real phone number here or keep the existing one
-  return `https://wa.me/5491112345678?text=${encoded}`
+  return `https://wa.me/56983557025?text=${encoded}`
 })
 </script>
 

@@ -92,9 +92,9 @@ onMounted(() => {
                             <li><router-link class="dropdown-item" to="/inventario/punto-de-venta"><b>Punto de Venta</b></router-link></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link transition duration-300" href="#">Nosotros</a>
-                    </li>
+                    </li> -->
                 </ul>
                 
                 <!-- User section - moved to the right -->

@@ -34,8 +34,8 @@ import './assets/css/base.css'
           </div>
           <div class="col-md-4">
             <h6 class="text-white">Contacto</h6>
-            <p class="text-white-50">Email: info@comercialcasla.com</p>
-            <p class="text-white-50">Teléfono: +54 11 1234-5678</p>
+            <p class="text-white-50">Email: comercialcasla@gmail.com</p>
+            <p class="text-white-50">Teléfono: +56 9 8355 7025</p>
           </div>
           <div class="col-md-4">
             <h6 class="text-white">Síguenos</h6>

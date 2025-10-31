@@ -437,6 +437,7 @@ watch(() => props.categories, (newCategories) => {
   background: #e9ecef;
   outline: none;
   -webkit-appearance: none;
+  appearance: none;
 }
 
 .range-slider::-webkit-slider-thumb {
