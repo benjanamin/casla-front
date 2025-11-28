@@ -1,103 +1,90 @@
 // Product Service for Inventory System
-// This service handles all product-related operations including buy/sell prices and history
+// This service handles all product-related operations matching the backend DTOs
+
+import authService from './authService'
 
 class ProductService {
     constructor() {
         // Get API URL from environment variables
         this.apiUrl = import.meta.env.BACKEND_API_URL
         
-        // In a real application, this would come from your backend API
+        // Mock data matching ProductResponseDto structure
         this.products = [
             { 
-                id: '001', 
-                code: '123456789', 
+                id: 1, 
+                barcode: '123456789', 
                 name: 'Laptop HP Pavilion', 
                 brand: 'HP', 
-                sellPrice: 899990, 
-                buyPrice: 650000,
-                supplier: 'Distribuidora TechMax',
+                unitSellPrice: 899990, 
                 stock: 15,
-                category: 'Computadoras',
                 description: 'Laptop HP Pavilion 15.6" Intel Core i5',
-                priceHistory: [
-                    { date: '2024-01-15', type: 'buy', price: 650000, supplier: 'Distribuidora TechMax', quantity: 20 },
-                    { date: '2024-01-20', type: 'sell', price: 899990, quantity: 5 }
-                ]
+                unit: 'unidad',
+                enabled: true,
+                showInPOS: true,
+                showInStore: false,
+                createdAt: '2024-01-15T00:00:00Z',
+                updatedAt: '2024-01-20T00:00:00Z'
             },
             { 
-                id: '002', 
-                code: '987654321', 
+                id: 2, 
+                barcode: '987654321', 
                 name: 'Mouse Inalámbrico', 
                 brand: 'Logitech', 
-                sellPrice: 29990, 
-                buyPrice: 18000,
-                supplier: 'Electronics Pro',
+                unitSellPrice: 29990, 
                 stock: 50,
-                category: 'Periféricos',
                 description: 'Mouse inalámbrico Logitech M185',
-                priceHistory: [
-                    { date: '2024-01-10', type: 'buy', price: 18000, supplier: 'Electronics Pro', quantity: 100 },
-                    { date: '2024-01-18', type: 'sell', price: 29990, quantity: 50 }
-                ]
+                unit: 'unidad',
+                enabled: true,
+                showInPOS: true,
+                showInStore: true,
+                createdAt: '2024-01-10T00:00:00Z',
+                updatedAt: '2024-01-18T00:00:00Z'
             },
             { 
-                id: '003', 
-                code: '456789123', 
+                id: 3, 
+                barcode: '456789123', 
                 name: 'Teclado Mecánico', 
                 brand: 'Corsair', 
-                sellPrice: 149990, 
-                buyPrice: 95000,
-                supplier: 'Gaming Gear Co',
+                unitSellPrice: 149990, 
                 stock: 25,
-                category: 'Periféricos',
                 description: 'Teclado mecánico Corsair K70 RGB',
-                priceHistory: [
-                    { date: '2024-01-12', type: 'buy', price: 95000, supplier: 'Gaming Gear Co', quantity: 30 },
-                    { date: '2024-01-22', type: 'sell', price: 149990, quantity: 5 }
-                ]
+                unit: 'unidad',
+                enabled: true,
+                showInPOS: true,
+                showInStore: true,
+                createdAt: '2024-01-12T00:00:00Z',
+                updatedAt: '2024-01-22T00:00:00Z'
             },
             { 
-                id: '004', 
-                code: '789123456', 
+                id: 4, 
+                barcode: '789123456', 
                 name: 'Monitor 24"', 
                 brand: 'Samsung', 
-                sellPrice: 199990, 
-                buyPrice: 140000,
-                supplier: 'Display Solutions',
+                unitSellPrice: 199990, 
                 stock: 30,
-                category: 'Monitores',
                 description: 'Monitor Samsung 24" Full HD',
-                priceHistory: [
-                    { date: '2024-01-08', type: 'buy', price: 140000, supplier: 'Display Solutions', quantity: 40 },
-                    { date: '2024-01-25', type: 'sell', price: 199990, quantity: 10 }
-                ]
+                unit: 'unidad',
+                enabled: true,
+                showInPOS: true,
+                showInStore: false,
+                createdAt: '2024-01-08T00:00:00Z',
+                updatedAt: '2024-01-25T00:00:00Z'
             },
             { 
-                id: '005', 
-                code: '321654987', 
+                id: 5, 
+                barcode: '321654987', 
                 name: 'Auriculares Gaming', 
                 brand: 'Razer', 
-                sellPrice: 79990, 
-                buyPrice: 52000,
-                supplier: 'Audio Masters',
+                unitSellPrice: 79990, 
                 stock: 40,
-                category: 'Audio',
                 description: 'Auriculares gaming Razer Kraken X',
-                priceHistory: [
-                    { date: '2024-01-14', type: 'buy', price: 52000, supplier: 'Audio Masters', quantity: 60 },
-                    { date: '2024-01-21', type: 'sell', price: 79990, quantity: 20 }
-                ]
+                unit: 'unidad',
+                enabled: true,
+                showInPOS: true,
+                showInStore: true,
+                createdAt: '2024-01-14T00:00:00Z',
+                updatedAt: '2024-01-21T00:00:00Z'
             }
-        ]
-        
-        this.suppliers = [
-            'Distribuidora TechMax',
-            'Electronics Pro', 
-            'Gaming Gear Co',
-            'Display Solutions',
-            'Audio Masters',
-            'Storage Plus',
-            'Network Solutions'
         ]
     }
 
@@ -108,12 +95,40 @@ class ProductService {
 
     // Get product by barcode/code
     async getProductByCode(code) {
-        ///api/Product/get-by-barcode/
-        const response = this.apiCall(`/api/Product/get-by-barcode/${code}`)
-        return response
+        // Use proxy in development, direct URL in production (same pattern as LoginView)
+        const url = import.meta.env.DEV 
+            ? `/api/Product/get-by-barcode/${code}` 
+            : `${import.meta.env.VITE_API_URL}/api/Product/get-by-barcode/${code}`
+        
+        // Get auth token for authenticated requests
+        const token = authService.getAuthToken()
+        const headers = {
+            'Content-Type': 'application/json',
+        }
+        
+        // Add Authorization header if token exists
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`
+        }
+        
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: headers,
+            })
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`)
+            }
+            
+            return await response.json()
+        } catch (error) {
+            console.error(`Failed to get product by barcode ${code}:`, error)
+            throw error
+        }
     }
 
-    // Search products by query (name, brand, or code)
+    // Search products by query (name, brand, or barcode)
     searchProducts(query) {
         if (!query || query.trim() === '') {
             return Promise.resolve([])
@@ -123,18 +138,17 @@ class ProductService {
         const results = this.products.filter(product => 
             product.name.toLowerCase().includes(searchTerm) ||
             product.brand.toLowerCase().includes(searchTerm) ||
-            product.code.includes(searchTerm) ||
-            product.category.toLowerCase().includes(searchTerm) ||
-            product.supplier.toLowerCase().includes(searchTerm)
+            product.barcode.includes(searchTerm) ||
+            product.description.toLowerCase().includes(searchTerm)
         )
 
         return Promise.resolve(results)
     }
 
-    // Get products by category
-    getProductsByCategory(category) {
+    // Get products that are enabled and shown in POS
+    getProductsForPOS() {
         const results = this.products.filter(product => 
-            product.category.toLowerCase() === category.toLowerCase()
+            product.enabled && product.showInPOS
         )
         return Promise.resolve(results)
     }
@@ -150,33 +164,29 @@ class ProductService {
         const product = this.products.find(p => p.id === productId)
         if (product) {
             product.stock = Math.max(0, newStock) // Ensure stock doesn't go negative
+            product.updatedAt = new Date().toISOString()
             return Promise.resolve(product)
         }
         return Promise.reject(new Error('Product not found'))
     }
 
-    // Add new product
+    // Add new product - matches CreateProductDto
     addProduct(productData) {
+        const now = new Date().toISOString()
         const newProduct = {
-            id: Date.now().toString(), // Simple ID generation
-            code: productData.code,
+            id: Date.now(), // Simple ID generation
+            barcode: productData.barcode || '',
             name: productData.name,
             brand: productData.brand,
-            sellPrice: parseFloat(productData.sellPrice),
-            buyPrice: parseFloat(productData.buyPrice),
-            supplier: productData.supplier,
+            unitSellPrice: parseInt(productData.unitSellPrice),
             stock: parseInt(productData.stock),
-            category: productData.category,
-            description: productData.description,
-            priceHistory: [
-                { 
-                    date: new Date().toISOString().split('T')[0], 
-                    type: 'buy', 
-                    price: parseFloat(productData.buyPrice), 
-                    supplier: productData.supplier, 
-                    quantity: parseInt(productData.stock) 
-                }
-            ]
+            description: productData.description || '',
+            unit: productData.unit || 'unidad',
+            enabled: productData.enabled !== undefined ? productData.enabled : true,
+            showInPOS: productData.showInPOS !== undefined ? productData.showInPOS : true,
+            showInStore: productData.showInStore !== undefined ? productData.showInStore : false,
+            createdAt: now,
+            updatedAt: now
         }
 
         this.products.push(newProduct)
@@ -187,58 +197,36 @@ class ProductService {
     updateProduct(productId, updates) {
         const productIndex = this.products.findIndex(p => p.id === productId)
         if (productIndex !== -1) {
-            this.products[productIndex] = { ...this.products[productIndex], ...updates }
+            this.products[productIndex] = { 
+                ...this.products[productIndex], 
+                ...updates,
+                updatedAt: new Date().toISOString()
+            }
             return Promise.resolve(this.products[productIndex])
         }
         return Promise.reject(new Error('Product not found'))
     }
 
-    // Record a purchase (buy transaction)
-    recordPurchase(productId, quantity, buyPrice, supplier) {
+    // Record a purchase (buy transaction) - updates stock only
+    recordPurchase(productId, quantity) {
         const product = this.products.find(p => p.id === productId)
         if (product) {
             product.stock += quantity
-            product.buyPrice = buyPrice
-            product.supplier = supplier
-            
-            product.priceHistory.push({
-                date: new Date().toISOString().split('T')[0],
-                type: 'buy',
-                price: buyPrice,
-                supplier: supplier,
-                quantity: quantity
-            })
-            
+            product.updatedAt = new Date().toISOString()
             return Promise.resolve(product)
         }
         return Promise.reject(new Error('Product not found'))
     }
 
-    // Record a sale (sell transaction)
-    recordSale(productId, quantity, sellPrice) {
+    // Record a sale (sell transaction) - updates stock only
+    recordSale(productId, quantity) {
         const product = this.products.find(p => p.id === productId)
         if (product && product.stock >= quantity) {
             product.stock -= quantity
-            
-            product.priceHistory.push({
-                date: new Date().toISOString().split('T')[0],
-                type: 'sell',
-                price: sellPrice,
-                quantity: quantity
-            })
-            
+            product.updatedAt = new Date().toISOString()
             return Promise.resolve(product)
         }
         return Promise.reject(new Error('Product not found or insufficient stock'))
-    }
-
-    // Get price history for a product
-    getPriceHistory(productId) {
-        const product = this.products.find(p => p.id === productId)
-        if (product) {
-            return Promise.resolve([...product.priceHistory].sort((a, b) => new Date(b.date) - new Date(a.date)))
-        }
-        return Promise.reject(new Error('Product not found'))
     }
 
     // Delete product
@@ -251,15 +239,16 @@ class ProductService {
         return Promise.reject(new Error('Product not found'))
     }
 
-    // Get product categories
+    // Get product categories (if needed for legacy support)
     getCategories() {
-        const categories = [...new Set(this.products.map(p => p.category))]
-        return Promise.resolve(categories)
+        // Categories are no longer part of the DTO, return empty array
+        return Promise.resolve([])
     }
 
-    // Get suppliers
+    // Get suppliers (if needed for legacy support)
     getSuppliers() {
-        return Promise.resolve([...this.suppliers])
+        // Suppliers are no longer part of the DTO, return empty array
+        return Promise.resolve([])
     }
 
     // Get products with pagination
@@ -267,10 +256,12 @@ class ProductService {
         let filteredProducts = this.products
 
         if (search) {
+            const searchLower = search.toLowerCase()
             filteredProducts = this.products.filter(product => 
-                product.name.toLowerCase().includes(search.toLowerCase()) ||
-                product.brand.toLowerCase().includes(search.toLowerCase()) ||
-                product.supplier.toLowerCase().includes(search.toLowerCase())
+                product.name.toLowerCase().includes(searchLower) ||
+                product.brand.toLowerCase().includes(searchLower) ||
+                product.barcode.includes(search) ||
+                product.description.toLowerCase().includes(searchLower)
             )
         }
 
@@ -290,9 +281,11 @@ class ProductService {
     // Get inventory summary
     getInventorySummary() {
         const totalProducts = this.products.length
-        const totalValue = this.products.reduce((sum, product) => sum + (product.buyPrice * product.stock), 0)
+        // Calculate total value using sell price (since buyPrice is no longer in DTO)
+        const totalValue = this.products.reduce((sum, product) => sum + (product.unitSellPrice * product.stock), 0)
         const lowStockCount = this.products.filter(p => p.stock < 10).length
-        const categories = [...new Set(this.products.map(p => p.category))]
+        // Categories no longer exist in the DTO
+        const categories = []
 
         return Promise.resolve({
             totalProducts,
@@ -306,14 +299,32 @@ class ProductService {
     
     // Generic API call method
     async apiCall(endpoint, options = {}) {
-        const url = `${this.apiUrl}${endpoint}`
+        // Use proxy in development, direct URL in production (same pattern as getProductByCode)
+        const url = import.meta.env.DEV 
+            ? `/api${endpoint}` 
+            : `${import.meta.env.VITE_API_URL}${endpoint}`
+        
+        // Get auth token for authenticated requests
+        const token = authService.getAuthToken()
         const defaultOptions = {
             headers: {
                 'Content-Type': 'application/json',
             },
         }
         
-        const config = { ...defaultOptions, ...options }
+        // Add Authorization header if token exists
+        if (token) {
+            defaultOptions.headers['Authorization'] = `Bearer ${token}`
+        }
+        
+        const config = { 
+            ...defaultOptions, 
+            ...options,
+            headers: {
+                ...defaultOptions.headers,
+                ...(options.headers || {})
+            }
+        }
         
         try {
             const response = await fetch(url, config)
@@ -331,7 +342,7 @@ class ProductService {
 
     // Get all products from backend
     async getAllProductsFromAPI() {
-        return this.apiCall('/products')
+        return this.apiCall('/api/Product')
     }
 
     // Get product by ID from backend
@@ -339,17 +350,29 @@ class ProductService {
         return this.apiCall(`/api/Product/${id}`)
     }
 
-    // Create new product via API
+    // Create new product via API - matches CreateProductDto
     async createProductAPI(productData) {
-        return this.apiCall('/products', {
+        // Map to CreateProductDto structure
+        const createDto = {
+            barcode: productData.barcode || '',
+            brand: productData.brand,
+            name: productData.name,
+            description: productData.description || '',
+            unitSellPrice: parseInt(productData.unitSellPrice),
+            stock: parseInt(productData.stock),
+            enabled: productData.enabled !== undefined ? productData.enabled : true,
+            showInPOS: productData.showInPOS !== undefined ? productData.showInPOS : true,
+            showInStore: productData.showInStore !== undefined ? productData.showInStore : false
+        }
+        return this.apiCall('/api/Product', {
             method: 'POST',
-            body: JSON.stringify(productData)
+            body: JSON.stringify(createDto)
         })
     }
 
     // Update product via API
     async updateProductAPI(id, productData) {
-        return this.apiCall(`/products/${id}`, {
+        return this.apiCall(`/api/Product/${id}`, {
             method: 'PUT',
             body: JSON.stringify(productData)
         })
@@ -357,14 +380,14 @@ class ProductService {
 
     // Delete product via API
     async deleteProductAPI(id) {
-        return this.apiCall(`/products/${id}`, {
+        return this.apiCall(`/api/Product/${id}`, {
             method: 'DELETE'
         })
     }
 
     // Search products via API
     async searchProductsAPI(query) {
-        return this.apiCall(`/products/search?q=${encodeURIComponent(query)}`)
+        return this.apiCall(`/api/Product/search?q=${encodeURIComponent(query)}`)
     }
 
     // Get products with pagination via API
@@ -374,7 +397,7 @@ class ProductService {
             limit: limit.toString(),
             ...(search && { search })
         })
-        return this.apiCall(`/products?${params}`)
+        return this.apiCall(`/api/Product?${params}`)
     }
 }
 

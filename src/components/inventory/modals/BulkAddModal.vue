@@ -87,9 +87,43 @@ export default {
       this.bulkProductsText = ''
       
       // Close the modal using Bootstrap's modal API
-      const modal = bootstrap.Modal.getInstance(document.getElementById('bulkAddModal'))
-      if (modal) {
-        modal.hide()
+      this.closeModal()
+    },
+    
+    closeModal() {
+      const modalElement = document.getElementById('bulkAddModal')
+      if (!modalElement) return
+      
+      // Try multiple methods to close the modal
+      // Method 1: Try window.bootstrap (Bootstrap 5)
+      if (window.bootstrap) {
+        const modal = window.bootstrap.Modal.getInstance(modalElement)
+        if (modal) {
+          modal.hide()
+          return
+        }
+      }
+      
+      // Method 2: Try to get Bootstrap from the element's data
+      if (modalElement._bootstrap) {
+        modalElement._bootstrap.hide()
+        return
+      }
+      
+      // Method 3: Trigger the close button click
+      const closeButton = modalElement.querySelector('[data-bs-dismiss="modal"]')
+      if (closeButton) {
+        closeButton.click()
+        return
+      }
+      
+      // Method 4: Manually hide using Bootstrap classes and events
+      modalElement.classList.remove('show')
+      modalElement.style.display = 'none'
+      document.body.classList.remove('modal-open')
+      const backdrop = document.querySelector('.modal-backdrop')
+      if (backdrop) {
+        backdrop.remove()
       }
     }
   },

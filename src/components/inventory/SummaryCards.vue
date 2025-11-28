@@ -36,7 +36,10 @@ export default {
   },
   methods: {
     formatCurrency(amount) {
-      return amount.toLocaleString('es-CL')
+      if (amount === null || amount === undefined || isNaN(amount)) {
+        return '0'
+      }
+      return Number(amount).toLocaleString('es-CL')
     }
   }
 }

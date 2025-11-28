@@ -13,55 +13,42 @@
           <div class="modal-body">
             <div class="row mb-3">
               <div class="col-md-6">
-                <label class="form-label">Código</label>
-                <input v-model="formData.code" type="text" class="form-control" required>
+                <label class="form-label">Código de Barras</label>
+                <input v-model="formData.barcode" type="text" class="form-control">
               </div>
               <div class="col-md-6">
-                <label class="form-label">Nombre</label>
+                <label class="form-label">Nombre <span class="text-danger">*</span></label>
                 <input v-model="formData.name" type="text" class="form-control" required>
               </div>
             </div>
             
             <div class="row mb-3">
               <div class="col-md-6">
-                <label class="form-label">Marca</label>
+                <label class="form-label">Marca <span class="text-danger">*</span></label>
                 <input v-model="formData.brand" type="text" class="form-control" required>
               </div>
               <div class="col-md-6">
-                <label class="form-label">Categoría</label>
-                <select v-model="formData.category" class="form-select" required>
-                  <option value="">Seleccionar categoría</option>
-                  <option v-for="category in categories" :key="category" :value="category">
-                    {{ category }}
-                  </option>
-                </select>
+                <label class="form-label">Precio de Venta Unitario <span class="text-danger">*</span></label>
+                <input 
+                  :value="formattedPrice" 
+                  @input="handlePriceInput"
+                  type="text" 
+                  class="form-control" 
+                  placeholder="0"
+                  required>
               </div>
             </div>
             
             <div class="row mb-3">
               <div class="col-md-6">
-                <label class="form-label">Precio de Compra</label>
-                <input v-model="formData.buyPrice" type="number" min="0" step="100" class="form-control" required>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Precio de Venta</label>
-                <input v-model="formData.sellPrice" type="number" min="0" step="100" class="form-control" required>
-              </div>
-            </div>
-            
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label class="form-label">Proveedor</label>
-                <select v-model="formData.supplier" class="form-select" required>
-                  <option value="">Seleccionar proveedor</option>
-                  <option v-for="supplier in suppliers" :key="supplier" :value="supplier">
-                    {{ supplier }}
-                  </option>
-                </select>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Stock Inicial</label>
-                <input v-model="formData.stock" type="number" min="0" class="form-control" required>
+                <label class="form-label">Stock Inicial <span class="text-danger">*</span></label>
+                <input 
+                  :value="formattedStock" 
+                  @input="handleStockInput"
+                  type="text" 
+                  class="form-control" 
+                  placeholder="0"
+                  required>
               </div>
             </div>
             
@@ -84,53 +71,112 @@
 <script>
 export default {
   name: 'AddProductModal',
-  props: {
-    categories: {
-      type: Array,
-      default: () => []
-    },
-    suppliers: {
-      type: Array,
-      default: () => []
-    }
-  },
   emits: ['submit'],
   data() {
     return {
       formData: {
-        code: '',
+        barcode: '',
         name: '',
         brand: '',
-        category: '',
-        buyPrice: '',
-        sellPrice: '',
-        supplier: '',
-        stock: '',
+        unitSellPrice: 0,
+        stock: 0,
         description: ''
       }
     }
   },
+  computed: {
+    formattedPrice() {
+      if (!this.formData.unitSellPrice || this.formData.unitSellPrice === 0) {
+        return ''
+      }
+      return Number(this.formData.unitSellPrice).toLocaleString('es-CL')
+    },
+    formattedStock() {
+      if (!this.formData.stock || this.formData.stock === 0) {
+        return ''
+      }
+      return Number(this.formData.stock).toLocaleString('es-CL')
+    }
+  },
   methods: {
+    handlePriceInput(event) {
+      // Remove all non-digit characters
+      const rawValue = event.target.value.replace(/\D/g, '')
+      // Convert to integer and store
+      this.formData.unitSellPrice = rawValue === '' ? 0 : parseInt(rawValue, 10)
+    },
+    
+    handleStockInput(event) {
+      // Remove all non-digit characters
+      const rawValue = event.target.value.replace(/\D/g, '')
+      // Convert to integer and store
+      this.formData.stock = rawValue === '' ? 0 : parseInt(rawValue, 10)
+    },
+    
     handleSubmit() {
-      this.$emit('submit', { ...this.formData })
+      // Prepare data matching CreateProductDto structure
+      const productData = {
+        barcode: this.formData.barcode || '',
+        brand: this.formData.brand,
+        name: this.formData.name,
+        description: this.formData.description || '',
+        unitSellPrice: parseInt(this.formData.unitSellPrice) || 0,
+        stock: parseInt(this.formData.stock) || 0,
+        enabled: true, // Always true by default
+        showInPOS: true, // Always true as per requirements
+        showInStore: false // Always false as per requirements
+      }
+      
+      this.$emit('submit', productData)
       this.resetForm()
       // Close the modal using Bootstrap's modal API
-      const modal = bootstrap.Modal.getInstance(document.getElementById('addProductModal'))
-      if (modal) {
-        modal.hide()
+      this.closeModal()
+    },
+    
+    closeModal() {
+      const modalElement = document.getElementById('addProductModal')
+      if (!modalElement) return
+      
+      // Try multiple methods to close the modal
+      // Method 1: Try window.bootstrap (Bootstrap 5)
+      if (window.bootstrap) {
+        const modal = window.bootstrap.Modal.getInstance(modalElement)
+        if (modal) {
+          modal.hide()
+          return
+        }
+      }
+      
+      // Method 2: Try to get Bootstrap from the element's data
+      if (modalElement._bootstrap) {
+        modalElement._bootstrap.hide()
+        return
+      }
+      
+      // Method 3: Trigger the close button click
+      const closeButton = modalElement.querySelector('[data-bs-dismiss="modal"]')
+      if (closeButton) {
+        closeButton.click()
+        return
+      }
+      
+      // Method 4: Manually hide using Bootstrap classes and events
+      modalElement.classList.remove('show')
+      modalElement.style.display = 'none'
+      document.body.classList.remove('modal-open')
+      const backdrop = document.querySelector('.modal-backdrop')
+      if (backdrop) {
+        backdrop.remove()
       }
     },
     
     resetForm() {
       this.formData = {
-        code: '',
+        barcode: '',
         name: '',
         brand: '',
-        category: '',
-        buyPrice: '',
-        sellPrice: '',
-        supplier: '',
-        stock: '',
+        unitSellPrice: 0,
+        stock: 0,
         description: ''
       }
     }

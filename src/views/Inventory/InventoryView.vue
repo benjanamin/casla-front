@@ -38,8 +38,6 @@
     
     <!-- Add Product Modal -->
     <AddProductModal
-      :categories="summary.categories"
-      :suppliers="suppliers"
       @submit="addNewProduct"
     />
 
@@ -52,6 +50,7 @@
 <script>
 import productService from '@/services/productService'
 import authService from '@/services/authService'
+import Swal from 'sweetalert2'
 import {
   SummaryCards,
   SearchFilters,
@@ -168,33 +167,43 @@ export default {
         filtered = filtered.filter(product => 
           product.name.toLowerCase().includes(query) ||
           product.brand.toLowerCase().includes(query) ||
-          product.code.includes(query) ||
-          product.supplier.toLowerCase().includes(query)
+          product.barcode.includes(query) ||
+          product.description.toLowerCase().includes(query)
         )
       }
       
-      if (this.selectedCategory) {
-        filtered = filtered.filter(product => 
-          product.category === this.selectedCategory
-        )
-      }
-      
-      if (this.selectedSupplier) {
-        filtered = filtered.filter(product => 
-          product.supplier === this.selectedSupplier
-        )
-      }
+      // Category and supplier filters removed as they're no longer in the DTO
+      // Keeping the filter variables for backward compatibility but not using them
       
       this.filteredProducts = filtered
     },
     
     async addNewProduct(productData) {
       try {
-        await productService.addProduct(productData)
+        await productService.createProductAPI(productData)
         await this.loadData()
         this.applyFilters()
+        
+        // Show success message
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'Producto añadido correctamente',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#022e6b'
+        })
       } catch (error) {
         console.error('Error adding product:', error)
+        
+        // Show error message
+        const errorMessage = error.response?.data?.message || error.message || 'Error al agregar el producto. Por favor, intenta nuevamente.'
+        Swal.fire({
+          title: 'Error',
+          text: errorMessage,
+          icon: 'error',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#d63031'
+        })
       }
     },
     
@@ -229,25 +238,25 @@ export default {
     
     recordTransaction(product) {
       this.transactionProduct = { ...product }
-      this.transactionData.price = product.buyPrice
-      this.transactionData.supplier = product.supplier
+      // Buy price and supplier are no longer in the DTO
+      this.transactionData.price = 0
+      this.transactionData.supplier = ''
       this.showTransactionModal = true
     },
     
     async processTransaction() {
       try {
         if (this.transactionType === 'buy') {
+          // recordPurchase now only takes productId and quantity
           await productService.recordPurchase(
             this.transactionProduct.id,
-            this.transactionData.quantity,
-            this.transactionData.price,
-            this.transactionData.supplier
+            this.transactionData.quantity
           )
         } else {
+          // recordSale now only takes productId and quantity
           await productService.recordSale(
             this.transactionProduct.id,
-            this.transactionData.quantity,
-            this.transactionData.price
+            this.transactionData.quantity
           )
         }
         
@@ -260,50 +269,16 @@ export default {
     },
     
     async viewHistory(product) {
+      // Price history is no longer part of the DTO
+      // This method is kept for backward compatibility but won't show history
       try {
         this.historyProduct = product
-        this.priceHistory = await productService.getPriceHistory(product.id)
+        this.priceHistory = [] // Price history no longer available
         this.showHistoryModal = true
         
-        this.$nextTick(() => {
-          this.renderHistoryChart()
-        })
+        // Chart rendering removed as price history is no longer available
       } catch (error) {
         console.error('Error loading price history:', error)
-      }
-    },
-    
-    renderHistoryChart() {
-      const ctx = this.$refs.historyChart
-      if (!ctx) return
-      
-      const buyPrices = this.priceHistory
-        .filter(record => record.type === 'buy')
-        .map(record => record.price)
-      
-      // Simple chart rendering - in a real app you'd use Chart.js or similar
-      ctx.width = ctx.offsetWidth
-      ctx.height = 200
-      const context = ctx.getContext('2d')
-      
-      // Clear canvas
-      context.clearRect(0, 0, ctx.width, ctx.height)
-      
-      // Draw chart (simplified)
-      if (buyPrices.length > 0) {
-        context.strokeStyle = '#022e6b'
-        context.lineWidth = 2
-        context.beginPath()
-        buyPrices.forEach((price, index) => {
-          const x = (index / (buyPrices.length - 1)) * ctx.width
-          const y = ctx.height - (price / Math.max(...buyPrices)) * ctx.height
-          if (index === 0) {
-            context.moveTo(x, y)
-          } else {
-            context.lineTo(x, y)
-          }
-        })
-        context.stroke()
       }
     },
     
@@ -320,7 +295,10 @@ export default {
     },
     
     formatCurrency(amount) {
-      return amount.toLocaleString('es-CL')
+      if (amount === null || amount === undefined || isNaN(amount)) {
+        return '0'
+      }
+      return Number(amount).toLocaleString('es-CL')
     },
     
     formatDate(dateString) {
