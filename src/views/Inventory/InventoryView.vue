@@ -12,8 +12,6 @@
         </button>
       </div>
     </div>
-    <!-- Summary Cards -->
-    <SummaryCards :summary="summary" />
 
     <!-- Search and Filters -->
     <SearchFilters
@@ -27,13 +25,23 @@
       @supplierFilter="handleSupplierFilter"
     />
 
+    <!-- Loading Indicator -->
+    <div v-if="loading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Cargando productos...</p>
+    </div>
+
     <!-- Products Table -->
     <ProductsTable
-      :products="filteredProducts"
+      v-else
+      :products="products"
+      :pagination="pagination"
+      :loading="loading"
       @edit="editProduct"
       @viewHistory="viewHistory"
       @recordTransaction="recordTransaction"
       @delete="deleteProduct"
+      @page-change="handlePageChange"
     />
     
     <!-- Add Product Modal -->
@@ -52,7 +60,6 @@ import productService from '@/services/productService'
 import authService from '@/services/authService'
 import Swal from 'sweetalert2'
 import {
-  SummaryCards,
   SearchFilters,
   ProductsTable,
   AddProductModal,
@@ -62,7 +69,6 @@ import {
 export default {
   name: 'InventoryView',
   components: {
-    SummaryCards,
     SearchFilters,
     ProductsTable,
     AddProductModal,
@@ -82,6 +88,17 @@ export default {
       selectedCategory: '',
       selectedSupplier: '',
       filteredProducts: [],
+      
+      // Pagination
+      pagination: {
+        page: 1,
+        pageSize: 10,
+        totalCount: 0,
+        totalPages: 0,
+        hasPreviousPage: false,
+        hasNextPage: false
+      },
+      loading: false,
       
       // Modals
       showEditModal: false,
@@ -131,19 +148,46 @@ export default {
   
   methods: {
     async loadData() {
+      this.loading = true
       try {
-        const [products, suppliers, summary] = await Promise.all([
-          productService.getAllProducts(),
+        const [paginatedResponse, suppliers, summary] = await Promise.all([
+          productService.getAllProductsPaginated(this.pagination.page, this.pagination.pageSize),
           productService.getSuppliers(),
           productService.getInventorySummary()
         ])
         
-        this.products = products
+        // Map the paginated response to match PaginatedResponseDto structure
+        this.products = paginatedResponse.data || []
+        this.pagination = {
+          page: paginatedResponse.page || 1,
+          pageSize: paginatedResponse.pageSize || 10,
+          totalCount: paginatedResponse.totalCount || 0,
+          totalPages: paginatedResponse.totalPages || 0,
+          hasPreviousPage: paginatedResponse.hasPreviousPage || false,
+          hasNextPage: paginatedResponse.hasNextPage || false
+        }
+        
         this.suppliers = suppliers
         this.summary = summary
-        this.filteredProducts = [...products]
+        this.filteredProducts = [...this.products]
       } catch (error) {
         console.error('Error loading data:', error)
+        Swal.fire({
+          title: 'Error',
+          text: 'Error al cargar los productos. Por favor, intenta nuevamente.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#d63031'
+        })
+      } finally {
+        this.loading = false
+      }
+    },
+    
+    async handlePageChange(newPage) {
+      if (newPage >= 1 && newPage <= this.pagination.totalPages) {
+        this.pagination.page = newPage
+        await this.loadData()
       }
     },
     
@@ -160,6 +204,8 @@ export default {
     },
     
     applyFilters() {
+      // With pagination, filtering should be done on the backend
+      // For now, we'll just filter the current page's products
       let filtered = [...this.products]
       
       if (this.searchQuery) {
@@ -181,8 +227,9 @@ export default {
     async addNewProduct(productData) {
       try {
         await productService.createProductAPI(productData)
+        // Reset to first page after adding a product
+        this.pagination.page = 1
         await this.loadData()
-        this.applyFilters()
         
         // Show success message
         Swal.fire({
@@ -285,11 +332,21 @@ export default {
     async deleteProduct(productId) {
       if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
         try {
-          await productService.deleteProduct(productId)
+          await productService.deleteProductAPI(productId)
+          // If we're on the last page and it becomes empty, go to previous page
+          if (this.products.length === 1 && this.pagination.page > 1) {
+            this.pagination.page--
+          }
           await this.loadData()
-          this.applyFilters()
         } catch (error) {
           console.error('Error deleting product:', error)
+          Swal.fire({
+            title: 'Error',
+            text: 'Error al eliminar el producto. Por favor, intenta nuevamente.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#d63031'
+          })
         }
       }
     },
@@ -462,6 +519,38 @@ export default {
 .history-badge.sell {
   background-color: #e3f2fd;
   color: #1565c0;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #022e6b;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-container p {
+  color: #666;
+  font-size: 16px;
+  margin: 0;
 }
 
 /* Responsive Design */

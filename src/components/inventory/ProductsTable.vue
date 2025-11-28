@@ -6,38 +6,38 @@
           <tr>
             <th>Código</th>
             <th>Producto</th>
-            <th>Categoría</th>
-            <th>Proveedor</th>
             <th>Stock</th>
-            <th>Precio Compra</th>
+            <th>Unidad</th>
             <th>Precio Venta</th>
-            <th>Margen</th>
+            <th>Estado</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="product in products" :key="product.id" 
-              :class="{ 'low-stock': product.stock < 10 }">
-            <td>{{ product.code }}</td>
+              :class="{ 'low-stock': product.stock < 10, 'disabled': !product.enabled }">
+            <td>{{ product.barcode }}</td>
             <td>
               <div class="product-info">
                 <strong>{{ product.name }}</strong>
                 <small>{{ product.brand }}</small>
+                <small v-if="product.description" class="description">{{ product.description }}</small>
               </div>
             </td>
-            <td>{{ product.category }}</td>
-            <td>{{ product.supplier }}</td>
             <td>
               <span class="stock-badge" :class="{ 'low': product.stock < 10 }">
                 {{ product.stock }}
               </span>
             </td>
-            <td>${{ formatCurrency(product.buyPrice) }}</td>
-            <td>${{ formatCurrency(product.sellPrice) }}</td>
+            <td>{{ product.unit }}</td>
+            <td>${{ formatCurrency(product.unitSellPrice) }}</td>
             <td>
-              <span class="margin-badge" :class="getMarginClass(product)">
-                {{ calculateMargin(product) }}%
-              </span>
+              <div class="status-badges">
+                <span v-if="product.enabled" class="status-badge enabled">Activo</span>
+                <span v-else class="status-badge disabled">Inactivo</span>
+                <span v-if="product.showInPOS" class="status-badge pos">POS</span>
+                <span v-if="product.showInStore" class="status-badge store">Tienda</span>
+              </div>
             </td>
             <td>
               <div class="action-buttons">
@@ -59,6 +59,36 @@
         </tbody>
       </table>
     </div>
+    
+    <!-- Pagination Controls -->
+    <div v-if="pagination" class="pagination-container">
+      <div class="pagination-info">
+        <span>
+          Mostrando {{ ((pagination.page - 1) * pagination.pageSize) + 1 }} - 
+          {{ Math.min(pagination.page * pagination.pageSize, pagination.totalCount) }} 
+          de {{ pagination.totalCount }} productos
+        </span>
+      </div>
+      <div class="pagination-controls">
+        <button 
+          @click="$emit('page-change', pagination.page - 1)"
+          :disabled="!pagination.hasPreviousPage || loading"
+          class="pagination-btn"
+          title="Página anterior">
+          ← Anterior
+        </button>
+        <div class="page-numbers">
+          <span class="current-page">{{ pagination.page }} / {{ pagination.totalPages }}</span>
+        </div>
+        <button 
+          @click="$emit('page-change', pagination.page + 1)"
+          :disabled="!pagination.hasNextPage || loading"
+          class="pagination-btn"
+          title="Página siguiente">
+          Siguiente →
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -70,24 +100,23 @@ export default {
       type: Array,
       required: true,
       default: () => []
+    },
+    pagination: {
+      type: Object,
+      default: null
+    },
+    loading: {
+      type: Boolean,
+      default: false
     }
   },
-  emits: ['edit', 'viewHistory', 'recordTransaction', 'delete'],
+  emits: ['edit', 'viewHistory', 'recordTransaction', 'delete', 'page-change'],
   methods: {
-    calculateMargin(product) {
-      if (product.buyPrice === 0) return 0
-      return Math.round(((product.sellPrice - product.buyPrice) / product.buyPrice) * 100)
-    },
-    
-    getMarginClass(product) {
-      const margin = this.calculateMargin(product)
-      if (margin >= 50) return 'high'
-      if (margin >= 25) return 'medium'
-      return 'low'
-    },
-    
     formatCurrency(amount) {
-      return amount.toLocaleString('es-CL')
+      if (amount === null || amount === undefined || isNaN(amount)) {
+        return '0'
+      }
+      return Number(amount).toLocaleString('es-CL')
     }
   }
 }
@@ -148,6 +177,12 @@ export default {
   font-size: 12px;
 }
 
+.product-info .description {
+  margin-top: 4px;
+  font-style: italic;
+  color: #999;
+}
+
 .stock-badge {
   padding: 4px 12px;
   border-radius: 20px;
@@ -179,9 +214,42 @@ export default {
   color: #856404;
 }
 
-.margin-badge.low {
+.status-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.status-badge.enabled {
+  background-color: #e8f5e8;
+  color: #2d5a2d;
+}
+
+.status-badge.disabled {
   background-color: #ffe8e8;
   color: #d63031;
+}
+
+.status-badge.pos {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.status-badge.store {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.products-table tr.disabled {
+  opacity: 0.6;
 }
 
 .action-buttons {
@@ -299,6 +367,84 @@ export default {
   .table-scroll-wrapper::after {
     font-size: 11px;
     padding: 8px;
+  }
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #f8f8f8;
+  border-top: 1px solid #e0e0e0;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.pagination-info {
+  color: #666;
+  font-size: 14px;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.pagination-btn {
+  padding: 10px 20px;
+  border: 2px solid #022e6b;
+  background-color: white;
+  color: #022e6b;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: #022e6b;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: #ccc;
+  color: #999;
+}
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.current-page {
+  padding: 8px 16px;
+  background-color: #022e6b;
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .pagination-container {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .pagination-controls {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .pagination-btn {
+    padding: 8px 16px;
+    font-size: 14px;
   }
 }
 </style>

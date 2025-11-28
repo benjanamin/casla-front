@@ -399,6 +399,16 @@ class ProductService {
         })
         return this.apiCall(`/api/Product?${params}`)
     }
+
+    // Get all products with pagination - matches PaginatedResponseDto<ProductResponseDto>
+    // Endpoint: /api/get-all?page=X&pageSize=Y
+    async getAllProductsPaginated(page = 1, pageSize = 10) {
+        const params = new URLSearchParams({
+            page: page.toString(),
+            pageSize: pageSize.toString()
+        })
+        return this.apiCall(`/get-all?${params}`)
+    }
 }
 
 // Create and export a singleton instance
