@@ -407,7 +407,7 @@ class ProductService {
             page: page.toString(),
             pageSize: pageSize.toString()
         })
-        return this.apiCall(`/get-all?${params}`)
+        return this.apiCall(`/Product/get-all?${params}`)
     }
 }
 
