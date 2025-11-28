@@ -300,9 +300,15 @@ class ProductService {
     // Generic API call method
     async apiCall(endpoint, options = {}) {
         // Use proxy in development, direct URL in production (same pattern as getProductByCode)
-        const url = import.meta.env.DEV 
-            ? `/api${endpoint}` 
-            : `${import.meta.env.VITE_API_URL}${endpoint}`
+        // Check if endpoint already starts with /api to avoid double /api/api
+        let url
+        if (import.meta.env.DEV) {
+            // In development, use proxy. Only prepend /api if endpoint doesn't already start with it
+            url = endpoint.startsWith('/api') ? endpoint : `/api${endpoint}`
+        } else {
+            // In production, use full API URL
+            url = `${import.meta.env.VITE_API_URL}${endpoint}`
+        }
         
         // Get auth token for authenticated requests
         const token = authService.getAuthToken()
