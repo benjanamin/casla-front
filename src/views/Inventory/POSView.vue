@@ -276,6 +276,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import productService from '@/services/productService'
 import authService from '@/services/authService'
+import orderService from '@/services/orderService'
 import Swal from 'sweetalert2'
 
 const router = useRouter()
@@ -428,16 +429,39 @@ const completeSale = async () => {
             userId: userId // Required UserId
         }
         
-        // Print the body that will be sent to the backend
-        console.log('Order DTO to be sent to backend:', JSON.stringify(createOrderDto, null, 2))
-        console.log('Formatted Order DTO:', createOrderDto)
+        // Post the order to the backend and wait for response
+        const orderResponse = await orderService.createOrder(createOrderDto)
+        console.log('Order created successfully:', orderResponse)
         
         // Show success message and clear cart
-        alert(`Venta completada exitosamente!\nTotal: ${formatCLP(total.value)}\n\nDTO creado y listo para enviar al backend.`)
+        // Show success message with auto-close timer (3 seconds)
+        await Swal.fire({
+            title: 'Venta completada exitosamente!',
+            icon: 'success',
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+        })
         clearCart()
     } catch (error) {
         console.error('Error completing sale:', error)
-        showErrorMessage('Error al completar la venta. Por favor, inténtalo de nuevo.')
+        
+        // Extract error message from response if available
+        let errorMessage = 'Error al completar la venta. Por favor, inténtalo de nuevo.'
+        if (error.message) {
+            errorMessage = error.message
+        } else if (error.response?.data?.message) {
+            errorMessage = error.response.data.message
+        }
+        
+        // Show error alert with Swal
+        await Swal.fire({
+            title: 'Error al completar la venta',
+            text: errorMessage,
+            icon: 'error',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#dc3545'
+        })
     }
 }
 
