@@ -29,7 +29,7 @@
                 {{ product.stock }}
               </span>
             </td>
-            <td>{{ product.unit }}</td>
+            <td>{{ formatUnit(product.unit) }}</td>
             <td>${{ formatCurrency(product.unitSellPrice) }}</td>
             <td>
               <div class="status-badges">
@@ -44,15 +44,15 @@
                 <button @click="$emit('edit', product)" class="btn-icon" title="Editar">
                   ✏️
                 </button>
-                <button @click="$emit('viewHistory', product)" class="btn-icon" title="Historial">
+                <!-- <button @click="$emit('viewHistory', product)" class="btn-icon" title="Historial">
                   📊
-                </button>
-                <button @click="$emit('recordTransaction', product)" class="btn-icon" title="Transacción">
+                </button> -->
+                <!-- <button @click="$emit('recordTransaction', product)" class="btn-icon" title="Transacción">
                   💰
                 </button>
                 <button @click="$emit('delete', product.id)" class="btn-icon delete" title="Eliminar">
                   🗑️
-                </button>
+                </button> -->
               </div>
             </td>
           </tr>
@@ -117,6 +117,16 @@ export default {
         return '0'
       }
       return Number(amount).toLocaleString('es-CL')
+    },
+    
+    formatUnit(unit) {
+      if (!unit) return 'Unidad'
+      // Transform "unit" (case-insensitive) to "Unidad"
+      if (unit.toLowerCase() === 'unit') {
+        return 'Unidad'
+      }
+      // Return the unit as-is if it's already in Spanish or other value
+      return unit
     }
   }
 }

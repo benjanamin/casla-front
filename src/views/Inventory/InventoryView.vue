@@ -52,6 +52,14 @@
     <!-- Bulk Add Modal -->
     <BulkAddModal @submit="addBulkProducts" />
 
+    <!-- Edit Product Modal -->
+    <EditProductModal
+      ref="editModal"
+      :product-id="editingProductId"
+      @load-product="loadProductForEdit"
+      @submit="updateProduct"
+    />
+
   </div>
 </template>
 
@@ -65,6 +73,7 @@ import {
   AddProductModal,
   BulkAddModal,
 } from '@/components/inventory'
+import EditProductModal from '@/components/inventory/modals/EditProductModal.vue'
 
 export default {
   name: 'InventoryView',
@@ -72,7 +81,8 @@ export default {
     SearchFilters,
     ProductsTable,
     AddProductModal,
-    BulkAddModal
+    BulkAddModal,
+    EditProductModal
   },
   data() {
     return {
@@ -104,6 +114,7 @@ export default {
       showEditModal: false,
       showTransactionModal: false,
       showHistoryModal: false,
+      editingProductId: null,
       
       // Forms
       editingProduct: {},
@@ -267,19 +278,124 @@ export default {
       }
     },
     
-    editProduct(product) {
-      this.editingProduct = { ...product }
-      this.showEditModal = true
+    async editProduct(product) {
+      this.editingProductId = product.id
+      
+      // Open the modal first (will show loading state)
+      this.$nextTick(() => {
+        const modalComponent = this.$refs.editModal
+        if (modalComponent && modalComponent.openModal) {
+          modalComponent.openModal()
+        } else {
+          // Fallback: try to open manually
+          const modalElement = document.getElementById('editProductModal')
+          if (modalElement) {
+            if (window.bootstrap) {
+              let modal = window.bootstrap.Modal.getInstance(modalElement)
+              if (!modal) {
+                modal = new window.bootstrap.Modal(modalElement)
+              }
+              modal.show()
+            }
+          }
+        }
+      })
+      
+      // Load product data after modal is opened
+      try {
+        await this.loadProductForEdit(product.id)
+      } catch (error) {
+        // Error already handled in loadProductForEdit
+        console.error('Failed to load product for editing:', error)
+      }
     },
     
-    async updateProductData() {
+    async loadProductForEdit(productId) {
+      // Set loading state in modal
+      const modalComponent = this.$refs.editModal
+      if (modalComponent) {
+        modalComponent.loading = true
+      }
+      
       try {
-        await productService.updateProduct(this.editingProduct.id, this.editingProduct)
-        this.showEditModal = false
+        const product = await productService.getProductByIdFromAPI(productId)
+        // Set the product data in the modal
+        if (modalComponent) {
+          modalComponent.setProductData(product)
+          modalComponent.loading = false
+        }
+        return product
+      } catch (error) {
+        console.error('Error loading product:', error)
+        if (modalComponent) {
+          modalComponent.loading = false
+        }
+        Swal.fire({
+          title: 'Error',
+          text: 'Error al cargar el producto. Por favor, intenta nuevamente.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#d63031'
+        })
+        throw error
+      }
+    },
+    
+    async updateProduct(updateData) {
+      if (!this.editingProductId) return
+      // Show loading message
+      Swal.fire({
+        title: 'Guardando...',
+        text: 'Por favor espera mientras se actualiza el producto',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+      })
+      
+      try {
+        await productService.updateProductPatchAPI(this.editingProductId, updateData)
+        
+        // Close the modal
+        const modalElement = document.getElementById('editProductModal')
+        if (modalElement && window.bootstrap) {
+          const modal = window.bootstrap.Modal.getInstance(modalElement)
+          if (modal) {
+            modal.hide()
+            modalElement.close()
+          }
+        }
+        
+        // Reset editing product ID
+        this.editingProductId = null
+        
+        // Close loading message
+        Swal.close()
+        
+        // Refresh the table
         await this.loadData()
-        this.applyFilters()
+        
+        // Show success message
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'Producto actualizado correctamente',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#022e6b'
+        })
       } catch (error) {
         console.error('Error updating product:', error)
+        Swal.close()
+        const errorMessage = error.response?.data?.message || error.message || 'Error al actualizar el producto. Por favor, intenta nuevamente.'
+        Swal.fire({
+          title: 'Error',
+          text: errorMessage,
+          icon: 'error',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#d63031'
+        })
+        throw error
       }
     },
     

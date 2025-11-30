@@ -376,11 +376,27 @@ class ProductService {
         })
     }
 
-    // Update product via API
+    // Update product via API (PUT)
     async updateProductAPI(id, productData) {
         return this.apiCall(`/api/Product/${id}`, {
             method: 'PUT',
             body: JSON.stringify(productData)
+        })
+    }
+
+    // Update product via API (PATCH) - matches UpdateProductDto
+    async updateProductPatchAPI(id, productData) {
+        // Only include fields that are in UpdateProductDto
+        const updateDto = {}
+        if (productData.name !== undefined) updateDto.name = productData.name
+        if (productData.stock !== undefined) updateDto.stock = parseInt(productData.stock)
+        if (productData.unitSellPrice !== undefined) updateDto.unitSellPrice = parseInt(productData.unitSellPrice)
+        if (productData.brand !== undefined) updateDto.brand = productData.brand
+        if (productData.barcode !== undefined) updateDto.barcode = productData.barcode
+        
+        return this.apiCall(`/api/Product/${id}`, {
+            method: 'PATCH',
+            body: JSON.stringify(updateDto)
         })
     }
 

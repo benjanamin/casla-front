@@ -8,6 +8,7 @@
         type="text" 
         placeholder="Buscar productos..."
         class="search-input"
+        disabled
       >
       <span class="search-icon">🔍</span>
     </div>
@@ -17,6 +18,7 @@
          :value="selectedCategory" 
          @change="handleCategoryFilter"
          class="filter-select"
+         disabled
        >
         <option value="">Todas las categorías</option>
         <option v-for="category in categories" :key="category" :value="category">
@@ -28,7 +30,8 @@
          :value="selectedSupplier" 
          @change="handleSupplierFilter"
          class="filter-select"
-       >
+         disabled
+         >
         <option value="">Todos los proveedores</option>
         <option v-for="supplier in suppliers" :key="supplier" :value="supplier">
           {{ supplier }}
